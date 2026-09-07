@@ -104,13 +104,17 @@ The process included reviewing the imported tables, validating their structure a
 
 The first step was to confirm that the three tables had been successfully imported into SQL Server and to establish their initial record counts.
 
-```SELECT COUNT(*) AS Total_Rows```
-
-```FROM Calendar;```
-
-
-
+```SQL
 SELECT COUNT(*) AS Total_Rows
-FROM dbo.Calendar
+FROM dbo.Calendar;
+```
 
+```SQL
+SELECT COUNT(*) AS Total_Rows
+FROM dbo.Customer_Flight;
+```
 
+```SQL
+SELECT COUNT(*) AS Total_Rows
+FROM dbo.Customer_Loyaltyss;
+```
