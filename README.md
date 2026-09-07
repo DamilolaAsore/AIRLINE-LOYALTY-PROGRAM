@@ -110,17 +110,7 @@ The first step was to confirm that the three tables had been successfully import
 
 
 
-
-
 SELECT COUNT(*) AS Total_Rows
+FROM dbo.Calendar
 
-FROM dbo.Calendar;
-
-SELECT COUNT(*) AS Total_Rows
-
-FROM dbo.Customer_Flight;
-
-SELECT COUNT(*) AS Total_Rows
-
-FROM dbo.Customer_Loyaltyss;
 
