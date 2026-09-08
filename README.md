@@ -866,4 +866,79 @@ The analysis focuses on two key measures:
 
 Understanding gross and net membership growth helps evaluate the campaign's ability to attract new members and retain them after enrolment. A high gross enrolment indicates strong campaign reach, while a high net membership figure indicates that the campaign was also successful in retaining members.
 
+##### SQL Analysis
 
+The campaign membership was analyzed by identifying customers enrolled through the promotional campaign and comparing their membership status.
+
+```SQL
+SELECT
+    [ENROLLMENT_TYPE],
+    COUNT(*) AS Total_Members,
+    SUM(
+        CASE
+            WHEN [CANCELLATION_YEAR] IS NOT NULL
+            THEN 1
+            ELSE 0
+        END
+    ) AS Cancelled_Members,
+    SUM(
+        CASE
+            WHEN [CANCELLATION_YEAR] IS NULL
+            THEN 1
+            ELSE 0
+        END
+    ) AS Active_Members
+FROM [CUSTOMER_LOYALTY_CLEANED]
+GROUP BY [ENROLLMENT_TYPE]
+ORDER BY Total_Members DESC;
+```
+
+The results were used to isolate the campaign members and determine their gross membership, cancellations, and remaining active members.
+
+##### Results
+
+| Membership Measure      | Campaign |
+|-------------------------|----------|
+| Gross Campaign Members  | 971      |
+| Cancelled Members       | 115      |
+| Net Active Members      | 856      |
+| Retention Rate          | 88.16%   |
+| Cancellation Rate       | 11.84%   |
+
+
+The campaign attracted 971 loyalty program members. Of these, 115 members cancelled, leaving 856 active members. The campaign therefore achieved a net membership gain of 856 members after accounting for cancellations.
+
+- Campaign Enrolment by Month
+  
+The campaign enrolment period covered February, March, and April 2018.
+
+| Month    | Campaign Enrolments |
+|----------|--------------------:|
+| February | 295                 |
+| March   | 330                 |
+| April   | 346                 |
+| **Total** | **971**            |
+
+
+
+April recorded the highest number of campaign enrollments with 346 members, followed by March with 330 and February with 295.
+
+##### Key Insights
+
+-	Strong membership acquisition: The campaign attracted 971 new loyalty members, demonstrating that the promotion generated meaningful membership growth.
+-	High retention: 856 members remained active, resulting in an 88.16% retention rate. This indicates that most customers acquired through the campaign continued their membership after enrollment.
+-	Limited cancellation: Only 115 campaign members cancelled, representing an 11.84% cancellation rate.
+-	Positive net membership impact: After accounting for cancellations, the campaign contributed 856 net active members to the loyalty program.
+-	Enrollment increased throughout the campaign: Campaign enrollment rose from 295 members in February to 330 in March and 346 in April, with April producing the highest enrollment.
+-	Campaign cancellation was slightly better than Standard membership: Campaign members recorded an 11.84% cancellation rate, compared with 12.38% among Standard members. This represents a 0.54 percentage-point lower cancellation rate for campaign members.
+  
+
+##### Conclusion
+
+The 2018 promotional campaign had a positive impact on loyalty program membership. It generated 971 gross memberships and retained 856 members after cancellations, representing an 88.16% retention rate. The relatively low 11.84% campaign cancellation rate, compared with 12.38% for Standard members, suggests that campaign-acquired members were retained at a slightly better rate than Standard members. 
+Overall, the campaign was effective in both attracting new loyalty members and maintaining a high proportion of those members, resulting in a meaningful net addition of 856 active members to the loyalty program.
+
+
+
+**2.	Was the campaign adoption more successful for certain demographics of loyalty members?**
+This question seeks to determine whether the 2018 promotional campaign was more successful among particular demographic groups within the loyalty program. Rather than looking only at the number of campaign members in each group, the analysis calculated campaign adoption rates by comparing campaign members with the total number of loyalty members in each demographic category. This provides a fairer comparison because demographic groups have different population sizes. The analysis considered gender, education, marital status, loyalty card type, salary, and customer lifetime value (CLV). Geographical adoption was analyzed separately using province and city.
