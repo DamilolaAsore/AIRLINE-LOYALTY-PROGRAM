@@ -263,20 +263,26 @@ NULL values were assessed across all major flight activity fields:
 SELECT
     COUNT(*) AS TOTAL_ROWS,
     SUM(CASE WHEN [LOYALTY_NUMBER] IS NULL THEN 1 ELSE 0 END) AS NULL_LOYALTY_NUMBER,
-    SUM(CASE WHEN [YEAR] IS NULL THEN 1 ELSE 0 END) AS Null_Year,
-    SUM(CASE WHEN [MONTH] IS NULL THEN 1 ELSE 0 END) AS Null_Month,
-    SUM(CASE WHEN [TOTAL_FLIGHTS] IS NULL THEN 1 ELSE 0 END) AS Null_Total_Flights,
-    SUM(CASE WHEN [DISTANCE] IS NULL THEN 1 ELSE 0 END) AS Null_Distance,
-    SUM(CASE WHEN [POINTS_ACCUMULATED] IS NULL THEN 1 ELSE 0 END) AS Null_Points_Accumulated,
-    SUM(CASE WHEN [POINTS_REDEEMED] IS NULL THEN 1 ELSE 0 END) AS Null_Points_Redeemed,
-    SUM(CASE WHEN [DOLLAR_COST_POINTS_REDEEMED] IS NULL THEN 1 ELSE 0 END) AS Null_Dollar_Cost
+    SUM(CASE WHEN [YEAR] IS NULL THEN 1 ELSE 0 END) AS NULL_YEAR,
+    SUM(CASE WHEN [MONTH] IS NULL THEN 1 ELSE 0 END) AS NULL_MONTH,
+    SUM(CASE WHEN [TOTAL_FLIGHTS] IS NULL THEN 1 ELSE 0 END) AS NULL_TOTAL_FLIGHTS,
+    SUM(CASE WHEN [DISTANCE] IS NULL THEN 1 ELSE 0 END) AS NULL_DISTANCE,
+    SUM(CASE WHEN [POINTS_ACCUMULATED] IS NULL THEN 1 ELSE 0 END) AS NULL_POINTS_ACCUMULATED,
+    SUM(CASE WHEN [POINTS_REDEEMED] IS NULL THEN 1 ELSE 0 END) AS NULL_POINTS_REDEEMED,
+    SUM(CASE WHEN [DOLLAR_COST_POINTS_REDEEMED] IS NULL THEN 1 ELSE 0 END) AS NULL_DOLLAR_COST_POINTS_REDEEMED
 FROM [CUSTOMER_FLIGHT]
 ```
+
+
+| TOTAL_ROWS | NULL_LOYALTY_NUMBER | NULL_YEAR | NULL_MONTH | NULL_TOTAL_FLIGHTS | NULL_DISTANCE | NULL_POINTS_ACCUMULATED | NULL_POINTS_REDEEMED | NULL_DOLLAR_COST_POINTS_REDEEMED |
+|-----------:|--------------------:|----------:|-----------:|-------------------:|--------------:|-----------------------:|----------------------:|---------------------------------:|
+| 392,936    | 0                   | 0         | 0          | 0                  | 0             | 0                      | 0                     | 0                                |
 
 
 
 
 The NULL assessment was used to confirm the completeness of the flight data before further processing.
+
 
 
 
@@ -297,7 +303,7 @@ SELECT
     [POINTS_ACCUMULATED],
     [POINTS_REDEEMED],
     [DOLLAR_COST_POINTS_REDEEMED],
-    COUNT(*) AS Duplicate_Count
+    COUNT(*) AS DUPLICATE_COUNT
 FROM [CUSTOMER_FLIGHT]
 GROUP BY
     [LOYALTY_NUMBER],
@@ -309,17 +315,17 @@ GROUP BY
     [POINTS_REDEEMED],
     [DOLLAR_COST_POINTS_REDEEMED]
 HAVING COUNT(*) > 1
-ORDER BY Duplicate_Count DESC;
+ORDER BY DUPLICATE_COUNT DESC
 ```
 
 A summary query was then used to quantify the duplicate records:
 
 ```SQL
 SELECT 
-    COUNT(*) AS Duplicate_Groups,
-    SUM(Duplicate_Count) AS Rows_In_Duplicate_Groups,
-    SUM(Duplicate_Count - 1) AS Extra_Duplicate_Rows,
-    MAX(Duplicate_Count) AS Highest_Repetition
+    COUNT(*) AS DUPLICATES_GROUPS,
+    SUM(Duplicate_Count) AS ROWS_IN_DUPLICATES_GROUPS,
+    SUM(Duplicate_Count - 1) AS EXTRA_DUPLICATES_ROWS,
+    MAX(Duplicate_Count) AS HIGHEST_REPETITION
 FROM (
     SELECT 
         [LOYALTY_NUMBER],
@@ -330,7 +336,7 @@ FROM (
         [POINTS_ACCUMULATED],
         [POINTS_REDEEMED],
         [DOLLAR_COST_POINTS_REDEEMED],
-        COUNT(*) AS Duplicate_Count
+        COUNT(*) AS DUPLICATE_COUNT
     FROM [CUSTOMER_FLIGHT]
     GROUP BY
         [LOYALTY_NUMBER],
@@ -342,8 +348,15 @@ FROM (
         [POINTS_REDEEMED],
         [DOLLAR_COST_POINTS_REDEEMED]
     HAVING COUNT(*) > 1
-) AS Duplicates;
+) AS DUPLICATES
 ```
+
+| DUPLICATES_GROUPS | ROWS_IN_DUPLICATES_GROUPS | EXTRA_DUPLICATES_ROWS | HIGHEST_REPETITION |
+|-----------------:|-------------------------:|---------------------:|-------------------:|
+| 1,906            | 3,828                    | 1,922                | 3                  |
+
+
+
 
 
 ##### The assessment identified:
@@ -352,6 +365,7 @@ FROM (
 2.	3,828 rows within duplicate groups 
 3.	1,922 extra duplicate records
 4.	3 as the highest repetition of a duplicated record
+   
 
 ##### Removing Exact Duplicate Records
 
@@ -368,23 +382,29 @@ SELECT DISTINCT
     [POINTS_REDEEMED],
     [DOLLAR_COST_POINTS_REDEEMED]
 INTO [CUSTOMER_FLIGHT_CLEANED]
-FROM [CUSTOMER_FLIGHT];
+FROM [CUSTOMER_FLIGHT]
 ```
 
 The resulting table was then checked:
 
 ```SQL
-SELECT COUNT(*) AS Cleaned_Row_Count
-FROM [CUSTOMER_FLIGHT_CLEANED];
+SELECT COUNT(*) AS UNIQUE_ROWS_COUNT
+FROM [CUSTOMER_FLIGHT_CLEANED]
 ```
 
+
+| UNIQUE_ROWS_COUNT |
+|------------:|
+| 391,014     |
+
 This produced 391,014 unique flight records.
+
 
 A further duplicate check confirmed that duplicate groups no longer remained:
 
 ```SQL
 SELECT
-    COUNT(*) AS Duplicate_Groups
+    COUNT(*) AS DUPLICATES_GROUPS
 FROM (
     SELECT
         [LOYALTY_NUMBER],
@@ -395,7 +415,7 @@ FROM (
         [POINTS_ACCUMULATED],
         [POINTS_REDEEMED],
         [DOLLAR_COST_POINTS_REDEEMED],
-        COUNT(*) AS Duplicate_Count
+        COUNT(*) AS DUPLICATE_GROUPS
     FROM [CUSTOMER_FLIGHT_CLEANED]
     GROUP BY
         [LOYALTY_NUMBER],
@@ -407,8 +427,15 @@ FROM (
         [POINTS_REDEEMED],
         [DOLLAR_COST_POINTS_REDEEMED]
     HAVING COUNT(*) > 1
-) AS Duplicates;
+) AS DUPLICATES_GROUPS
 ```
+
+| DUPLICATES_GROUPS |
+|----------:|
+| 0         |
+
+
+
 
 
 **3. CUSTOMER_FLIGHT Value Validation**
