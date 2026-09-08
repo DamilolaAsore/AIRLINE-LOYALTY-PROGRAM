@@ -1103,6 +1103,140 @@ Overall, the findings suggest that future campaign targeting could place greater
 
 This analysis evaluates the relationship between the 2018 promotional campaign and customer flight activity during the summer period. Summer is defined as June, July, and August 2018. The analysis compares Promotion members with Standard members based on their total booked flights and average number of flights per member. Using the average flights per member provides a fairer comparison because the two enrollment groups have substantially different membership sizes.
 
+```SQL
+SELECT
+    [CUSTOMER_LOYALTY_CLEANED].[ENROLLMENT_TYPE],
+    COUNT(DISTINCT [CUSTOMER_FLIGHT_CLEANED].[LOYALTY_NUMBER]) AS Members,
+    SUM([CUSTOMER_FLIGHT_CLEANED].[TOTAL_FLIGHTS]) AS Total_Flights,
+    CAST(
+        1.0 * SUM([CUSTOMER_FLIGHT_CLEANED].[TOTAL_FLIGHTS])
+        / COUNT(DISTINCT [CUSTOMER_FLIGHT_CLEANED].[LOYALTY_NUMBER])
+        AS DECIMAL(10,2)
+    ) AS Average_Flights_Per_Member
+
+FROM [CUSTOMER_FLIGHT_CLEANED]
+
+INNER JOIN [CUSTOMER_LOYALTY_CLEANED]
+    ON [CUSTOMER_FLIGHT_CLEANED].[LOYALTY_NUMBER] =
+       [CUSTOMER_LOYALTY_CLEANED].[LOYALTY_NUMBER]
+
+WHERE [CUSTOMER_FLIGHT_CLEANED].[YEAR] = 2018
+  AND [CUSTOMER_FLIGHT_CLEANED].[MONTH] IN (6, 7, 8)
+
+GROUP BY [CUSTOMER_LOYALTY_CLEANED].[ENROLLMENT_TYPE]
+
+ORDER BY Average_Flights_Per_Member DESC;
+```
+
+
+##### Results
+
+| Enrollment Type | Members | Total Flights | Average Flights per Member |
+|-----------------|--------:|--------------:|---------------------------:|
+| Promotion       | 971     | 24,040        | 24.76                      |
+| Standard        | 15,766  | 80,544        | 5.11                       |
+| **Total**       | **16,737** | **104,584** |                           |
+
+
+##### Analysis of Results
+
+- The results show a substantial difference in flight activity between the two enrollment groups during summer 2018.
+
+- Promotion members recorded 24,040 total flights, while Standard members recorded 80,544 total flights. Although Standard members generated more flights overall, this is largely because they represent a much larger membership group.
+
+- When flight activity is measured on a per-member basis, the difference becomes much clearer. Promotion members averaged 24.76 flights per member, compared with 5.11 flights per Standard member.
+
+- Therefore, Promotion members recorded approximately 4.85 times the average flight activity of Standard members during the summer period. This is equivalent to approximately 384.54% higher flight activity per member.
+  
+
+##### Monthly Flight Activity
+
+| Months      | Promotion Avg. Flights/Member | Standard Avg. Flights/Member |
+|-------------|------------------------------:|-----------------------------:|
+| June 2018   | 8.35                          | 1.63                         |
+| July 2028   | 8.71                          | 1.87                         |
+| August 2018 | 7.70                          | 1.61                         |
+
+
+
+##### Key Insights
+
+-	Promotion members recorded 24,040 summer flights, compared with 80,544 flights from Standard members.
+-	Standard members generated more total flights because they had a much larger membership base.
+-	Promotion members recorded a substantially higher average number of flights per member.
+-	Promotion members averaged 24.76 flights per member, compared with 5.11 flights per Standard member.
+-	The average flight activity of Promotion members was approximately 4.85 times higher than that of Standard members.
+-	The results indicate a strong association between campaign membership and higher summer flight activity.
+-	July recorded the highest average flight activity for both groups, with Promotion members averaging 8.71 flights and Standard members 1.87 flights per member.
+
+
+##### Conclusion
+
+The analysis indicates that the 2018 promotional campaign was associated with significantly higher booked-flight activity during the summer period. Promotion members averaged 24.76 flights per member, compared with 5.11 flights per Standard member, representing approximately 384.54% higher flight activity per member.
+
+This suggests that the campaign was successful in engaging participating members and was associated with substantially greater flight activity during June, July, and August 2018. However, the result should be interpreted as an association rather than direct causation, since the available data does not provide a suitable pre-campaign flight history for Promotion members to establish that the campaign itself caused the increase.
+
+
+
+
+
+
+
+
+##	Recommendation
+
+**1. Strengthen and Expand Successful Promotional Campaigns**
+
+-	Action: Continue using promotional campaigns to attract new loyalty program members, while reviewing the factors that contributed to the campaign's strong member engagement.
+-	Rationale: The 2018 campaign generated 971 members, of which 856 remained active, resulting in an 88.16% retention rate. This indicates that the campaign attracted a meaningful number of members and that most campaign members remained active.
+
+**2. Target High-Adoption Geographic Segments**
+
+-	Action: Develop more targeted promotional campaigns for provinces and cities that demonstrate stronger campaign adoption, particularly areas such as Quebec and British Columbia.
+-	Rationale: Campaign adoption varied across geographical locations. Quebec recorded an adoption rate of 7.06%, while British Columbia recorded 6.35%, compared with lower adoption in some other provinces. This suggests that location-specific marketing strategies could improve campaign participation.
+
+**3. Develop Demographic-Specific Campaign Strategies**
+
+-	Action: Use demographic insights to tailor campaign messaging and offers to customer groups with higher adoption rates, particularly education and marital-status segments showing stronger participation.
+-	Rationale: Adoption varied across demographic groups. Customers with High School or Below education recorded 6.39% adoption, while Bachelor customers recorded 6.03%. Divorced customers also recorded a relatively higher adoption rate of 6.16%. These differences can help guide targeted marketing, while avoiding assumptions based solely on demographic characteristics.
+
+**4. Use Flight Activity to Strengthen Customer Engagement**
+
+-	Action: Design promotions that encourage members to book additional flights, particularly during high-demand travel periods such as summer.
+-	Rationale: Promotion members averaged 24.76 flights per member during June–August 2018, compared with 5.11 flights per Standard member. This strong difference indicates that campaign members were highly engaged with flight activity and that promotional membership can be associated with increased customer activity.
+
+**5. Replicate Successful Campaign Features During Peak Travel Periods**
+
+-	Action: Consider introducing targeted loyalty incentives before and during peak travel periods, such as summer, to encourage members to maintain or increase their flight activity.
+-	Rationale: The summer analysis showed substantially higher flight activity among Promotion members. Future campaigns could use this period to encourage additional bookings through targeted loyalty incentives and relevant travel offers.
+
+**6. Improve Campaign Targeting Using Customer Value**
+
+-	Action: Combine demographic, geographical, and customer-value information when identifying customers for future campaigns rather than applying the same promotion to the entire membership base.
+-	Rationale: Campaign adoption varied across CLV groups, with the Lower-Middle CLV group recording the highest adoption rate at 6.28%. This suggests that customer value can be considered alongside other characteristics when developing targeted campaigns.
+
+**7. Monitor Campaign Retention and Long-Term Customer Value**
+
+-	Action: Track campaign members after enrollment using KPIs such as retention rate, flight frequency, repeat bookings, points accumulation, points redemption, and CLV.
+-	Rationale: Measuring enrollment alone does not provide a complete picture of campaign success. The campaign generated 971 gross members and 856 active members, making it important to monitor whether these members remain active and continue generating value for the loyalty program.
+
+**8. Conduct Further Analysis to Measure True Campaign Impact**
+
+-	Action: Introduce pre- and post-campaign tracking for future promotional campaigns and compare participating customers with an appropriate control group.
+-	Rationale: The current analysis identifies a strong association between campaign membership and higher summer flight activity, but it does not establish that the campaign directly caused the increase. Future campaigns should capture customer activity before enrollment and after enrollment to enable a stronger measurement of incremental impact.
+
+
+
+
+
+## Conclusion
+
+The analysis of the Airline Loyalty Program provided insights into the performance of the 2018 promotional campaign, customer adoption patterns, and flight activity during the summer period.
+The campaign attracted 971 new members, of whom 856 remained active, resulting in an 88.16% retention rate. This indicates that the campaign was successful in attracting members while maintaining a strong level of member retention.
+Campaign adoption varied across customer segments. The differences were more noticeable across geographical and educational groups, while adoption rates across gender, marital status, loyalty card, and CLV groups were relatively closer. This highlights the importance of using customer segmentation to identify groups that may respond more positively to future promotional campaigns.
+The analysis of summer flight activity also showed a substantial difference between campaign and Standard members. Promotion members averaged 24.76 flights per member, compared with 5.11 flights per Standard member, representing approximately 384.54% higher flight activity per member during June, July, and August 2018. This demonstrates a strong association between campaign membership and higher customer flight activity.
+Overall, the findings show that the 2018 campaign generated meaningful membership growth, maintained strong member retention, and was associated with significantly higher flight activity among participating members. The insights provide a basis for the airline to improve future campaigns through targeted customer segmentation, geographic targeting, stronger engagement strategies, and continuous monitoring of member retention and customer activity.
+However, the analysis identifies association rather than direct causation between campaign participation and higher flight activity. Future campaigns should incorporate pre-campaign customer activity and appropriate comparison groups to provide a more accurate measurement of campaign impact and return on investment.
 
 
 
