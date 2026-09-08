@@ -940,5 +940,181 @@ Overall, the campaign was effective in both attracting new loyalty members and m
 
 
 
+
+
+
+
 **2.	Was the campaign adoption more successful for certain demographics of loyalty members?**
 This question seeks to determine whether the 2018 promotional campaign was more successful among particular demographic groups within the loyalty program. Rather than looking only at the number of campaign members in each group, the analysis calculated campaign adoption rates by comparing campaign members with the total number of loyalty members in each demographic category. This provides a fairer comparison because demographic groups have different population sizes. The analysis considered gender, education, marital status, loyalty card type, salary, and customer lifetime value (CLV). Geographical adoption was analyzed separately using province and city.
+
+##### SQL 
+
+Campaign adoption was analyzed by grouping loyalty members according to each demographic characteristic and comparing campaign members with the total number of members.
+
+```SQL
+SELECT
+    [GENDER],
+    COUNT(*) AS Total_Customers,
+    SUM(
+        CASE
+            WHEN [ENROLLMENT_TYPE] = 'Promotion'
+            THEN 1
+            ELSE 0
+        END
+    ) AS Campaign_Members,
+    CAST(
+        100.0 * SUM(
+            CASE
+                WHEN [ENROLLMENT_TYPE] = 'Promotion'
+                THEN 1
+                ELSE 0
+            END
+        ) / COUNT(*) AS DECIMAL(10,2)
+    ) AS Adoption_Rate
+FROM [CUSTOMER_LOYALTY_CLEANED]
+GROUP BY [GENDER]
+ORDER BY Adoption_Rate DESC;
+```
+
+The same analytical approach was applied to the other demographic variables to identify groups with relatively higher or lower campaign adoption.
+
+#### Results
+
+The analysis produced the following campaign adoption rates across the major demographic groups:
+
+- Gender
+
+  
+
+
+  | Gender | Campaign Members | Total Members | Adoption Rate |
+|--------|-----------------:|--------------:|--------------:|
+| Female | 494              | 8,410         | 5.87%         |
+| Male   | 477              | 8,327         | 5.73%         |
+
+
+
+
+
+Female members had a slightly higher campaign adoption rate than male members.
+
+
+- Education
+
+
+  
+
+  | Education            | Campaign Members | Total Members | Adoption Rate |
+|----------------------|-----------------:|--------------:|--------------:|
+| High School or Below | 50               | 782           | 6.39%         |
+| Bachelor             | 632              | 10,475        | 6.03%         |
+| College              | 238              | 4,238         | 5.62%         |
+| Doctor               | 32               | 734           | 4.36%         |
+| Master               | 19               | 508           | 3.74%         |
+
+
+
+
+
+
+Education showed a clearer difference in campaign adoption than gender. Members with High School or Below education had the highest adoption rate at 6.39%, while members with a Master's degree had the lowest at 3.74%.
+
+- Marital Status
+
+  
+
+  | Marital Status | Campaign Members | Total Members | Adoption Rate |
+|----------------|-----------------:|--------------:|--------------:|
+| Divorced       | 155              | 2,518         | 6.16%         |
+| Single         | 258              | 4,484         | 5.75%         |
+| Married        | 558              | 9,735         | 5.73%         |
+
+
+
+
+Divorced members recorded the highest adoption rate at 6.16%, although the difference between the groups was relatively small.
+
+
+- Loyalty Card
+
+  
+
+  | Loyalty Card | Campaign Members | Total Members | Adoption Rate |
+|-------------|-----------------:|--------------:|--------------:|
+| Aurora      | 208              | 3,429         | 6.07%         |
+| Nova        | 330              | 5,671         | 5.82%         |
+| Star        | 433              | 7,637         | 5.67%         |
+
+
+
+Aurora card members had the highest adoption rate at 6.07%, while Star members had the lowest at 5.67%. The relatively narrow range indicates that loyalty card type was not a major differentiator in campaign adoption.
+
+
+- Salary
+  
+Campaign adoption was also examined across salary bands:
+
+
+
+| Salary Band       | Total Members | Campaign Members | Adoption Rate |
+|-------------------|--------------:|-----------------:|--------------:|
+| Low (< $40K)      | 98            | 86               | 87.76%        |
+| Lower-Middle      | 3,202         | 202              | 6.31%         |
+| Middle            | 4,387         | 211              | 4.81%         |
+| Upper-Middle      | 3,271         | 146              | 4.46%         |
+| High              | 5,779         | 326              | 5.64%         |
+
+
+
+The Low salary group recorded an unusually high adoption rate of 87.76%. However, this group contained only 98 members, making it a much smaller population than the other salary bands. Therefore, this result should be interpreted cautiously. Among the larger salary groups, the Lower-Middle salary band had the highest adoption rate at 6.31%, while the Upper-Middle group recorded the lowest at 4.46%.
+
+
+- Customer Lifetime Value (CLV)
+
+
+
+| CLV Band       | Total Members | Campaign Members | Adoption Rate |
+|----------------|--------------:|-----------------:|--------------:|
+| Low            | 6,364         | 357              | 5.61%         |
+| Lower-Middle   | 4,090         | 257              | 6.28%         |
+| Middle         | 2,844         | 165              | 5.80%         |
+| Upper-Middle   | 1,675         | 95               | 5.67%         |
+| High           | 1,764         | 97               | 5.50%         |
+
+
+
+
+The Lower-Middle CLV group recorded the highest adoption rate at 6.28%, while the High CLV group recorded 5.50%. The overall difference was relatively small, indicating that CLV was not a strong differentiator of campaign adoption.
+
+
+##### Key Insights
+
+-	Education was one of the stronger demographic differentiators. Adoption ranged from 6.39% among members with High School or Below education to 3.74% among members with Master's education.
+-	Gender showed very little difference. Female members had a 5.87% adoption rate compared with 5.73% for males, a difference of only 0.14 percentage points.
+-	Marital status showed modest variation. Divorced members had the highest adoption rate at 6.16%, compared with 5.75% for Single and 5.73% for Married members.
+-	Loyalty card type was also a weak differentiator. Adoption ranged only from 5.67% to 6.07% across Star, Nova, and Aurora members.
+-	Salary showed an unusual result in the Low salary group. Its 87.76% adoption rate was substantially higher than the other groups, but the result is based on only 98 members. It should therefore not be interpreted as evidence that low-income customers generally have dramatically higher campaign adoption.
+-	CLV had limited influence on adoption. The difference between the highest and lowest CLV adoption rates was only 0.78 percentage points, suggesting that customer value was not a major factor distinguishing campaign adopters.
+
+  
+##### Conclusion
+
+The analysis indicates that campaign adoption was more successful among certain demographic groups, but the strength of the difference varied considerably by demographic characteristic. Among the demographic variables analyzed, education showed one of the clearest differences in adoption, with rates ranging from 3.74% to 6.39%. Salary also produced a notable difference, although the exceptionally high rate for the Low salary group should be treated cautiously because of its small population. 
+In contrast, gender, marital status, loyalty card type, and CLV showed relatively narrow differences in adoption rates. This suggests that these characteristics were less effective for distinguishing customers who were more likely to adopt the campaign.
+Overall, the findings suggest that future campaign targeting could place greater emphasis on education and broader customer segmentation, while avoiding reliance on a single demographic characteristic. The results also highlight the importance of considering group size when interpreting unusually high adoption rates.
+
+
+
+**3.	What impact did the campaign have on booked flights during summer?**
+
+This analysis evaluates the relationship between the 2018 promotional campaign and customer flight activity during the summer period. Summer is defined as June, July, and August 2018. The analysis compares Promotion members with Standard members based on their total booked flights and average number of flights per member. Using the average flights per member provides a fairer comparison because the two enrollment groups have substantially different membership sizes.
+
+
+
+
+
+
+
+
+
+
