@@ -162,8 +162,11 @@ ORDER BY TABLE_NAME, ORDINAL_POSITION;
 
 This ensured that the flight fields were stored using appropriate data types before analysis.
 
-	NULL Value Assessment
+-	NULL Value Assessment
+  
 NULL values were assessed across all major flight activity fields:
+
+```SQL
 SELECT
     COUNT(*) AS Total_Rows,
     SUM(CASE WHEN [LOYALTY_NUMBER] IS NULL THEN 1 ELSE 0 END) AS Null_Loyalty_Number,
@@ -175,9 +178,15 @@ SELECT
     SUM(CASE WHEN [POINTS_REDEEMED] IS NULL THEN 1 ELSE 0 END) AS Null_Points_Redeemed,
     SUM(CASE WHEN [DOLLAR_COST_POINTS_REDEEMED] IS NULL THEN 1 ELSE 0 END) AS Null_Dollar_Cost
 FROM [CUSTOMER_FLIGHT];
+```
+
 The NULL assessment was used to confirm the completeness of the flight data before further processing.
-	Duplicate Record Identification
+
+-	Duplicate Record Identification
+  
 Duplicate records were identified by comparing all fields that describe a flight activity record:
+
+```SQL
 SELECT 
     [LOYALTY_NUMBER],
     [YEAR],
@@ -200,8 +209,11 @@ GROUP BY
     [DOLLAR_COST_POINTS_REDEEMED]
 HAVING COUNT(*) > 1
 ORDER BY Duplicate_Count DESC;
+```
 
 A summary query was then used to quantify the duplicate records:
+
+```SQL
 SELECT 
     COUNT(*) AS Duplicate_Groups,
     SUM(Duplicate_Count) AS Rows_In_Duplicate_Groups,
@@ -230,15 +242,21 @@ FROM (
         [DOLLAR_COST_POINTS_REDEEMED]
     HAVING COUNT(*) > 1
 ) AS Duplicates;
+```
 
-The assessment identified:
-	1,906 duplicate groups
-	3,828 rows within duplicate groups
-	1,922 extra duplicate records
-	3 as the highest repetition of a duplicated record
 
-Removing Exact Duplicate Records
+##### The assessment identified:
+
+1.	1,906 duplicate groups 
+2.	3,828 rows within duplicate groups 
+3.	1,922 extra duplicate records
+4.	3 as the highest repetition of a duplicated record
+
+##### Removing Exact Duplicate Records
+
 After identifying the duplicate records, a cleaned table was created using SELECT DISTINCT to retain one occurrence of each unique flight record:
+
+```SQL
 SELECT DISTINCT
     [LOYALTY_NUMBER],
     [YEAR],
@@ -250,11 +268,20 @@ SELECT DISTINCT
     [DOLLAR_COST_POINTS_REDEEMED]
 INTO [CUSTOMER_FLIGHT_CLEANED]
 FROM [CUSTOMER_FLIGHT];
+```
+
 The resulting table was then checked:
+
+```SQL
 SELECT COUNT(*) AS Cleaned_Row_Count
 FROM [CUSTOMER_FLIGHT_CLEANED];
+```
+
 This produced 391,014 unique flight records.
+
 A further duplicate check confirmed that duplicate groups no longer remained:
+
+```SQL
 SELECT
     COUNT(*) AS Duplicate_Groups
 FROM (
@@ -280,10 +307,16 @@ FROM (
         [DOLLAR_COST_POINTS_REDEEMED]
     HAVING COUNT(*) > 1
 ) AS Duplicates;
+```
 
-3. CUSTOMER_FLIGHT Value Validation
+
+**3. CUSTOMER_FLIGHT Value Validation**
+
 After removing duplicates, the numerical flight fields were examined for invalid or unusual values.
-	Total Flights
+
+-	Total Flights
+  
+  ```SQL
 SELECT
     MIN([TOTAL_FLIGHTS]) AS Minimum_Flights,
     MAX([TOTAL_FLIGHTS]) AS Maximum_Flights,
@@ -291,8 +324,11 @@ SELECT
     SUM(CASE WHEN [TOTAL_FLIGHTS] < 0 THEN 1 ELSE 0 END) AS Negative_Flights,
     SUM(CASE WHEN [TOTAL_FLIGHTS] = 0 THEN 1 ELSE 0 END) AS Zero_Flights
 FROM [CUSTOMER_FLIGHT];
+```
 
-	Distance
+-	Distance
+
+  ```SQL
 SELECT
     MIN([DISTANCE]) AS Minimum_Distance,
     MAX([DISTANCE]) AS Maximum_Distance,
@@ -300,8 +336,12 @@ SELECT
     SUM(CASE WHEN [DISTANCE] < 0 THEN 1 ELSE 0 END) AS Negative_Distance,
     SUM(CASE WHEN [DISTANCE] = 0 THEN 1 ELSE 0 END) AS Zero_Distance
 FROM [CUSTOMER_FLIGHT];
+```
 
-	Points Accumulated
+
+-	Points Accumulated
+
+  ```SQL
 SELECT
     MIN([POINTS_ACCUMULATED]) AS Minimum_Points_Accumulated,
     MAX([POINTS_ACCUMULATED]) AS Maximum_Points_Accumulated,
@@ -309,8 +349,12 @@ SELECT
     SUM(CASE WHEN [POINTS_ACCUMULATED] < 0 THEN 1 ELSE 0 END) AS Negative_Points,
     SUM(CASE WHEN [POINTS_ACCUMULATED] = 0 THEN 1 ELSE 0 END) AS Zero_Points
 FROM [CUSTOMER_FLIGHT];
+```
 
-	Points Redeemed
+
+-	Points Redeemed
+
+  ```SQL
 SELECT
     MIN([POINTS_REDEEMED]) AS Minimum_Points_Redeemed,
     MAX([POINTS_REDEEMED]) AS Maximum_Points_Redeemed,
@@ -318,9 +362,12 @@ SELECT
     SUM(CASE WHEN [POINTS_REDEEMED] < 0 THEN 1 ELSE 0 END) AS Negative_Points_Redeemed,
     SUM(CASE WHEN [POINTS_REDEEMED] = 0 THEN 1 ELSE 0 END) AS Zero_Points_Redeemed
 FROM [CUSTOMER_FLIGHT];
+```
 
 
-	Dollar Cost of Points Redeemed
+-	Dollar Cost of Points Redeemed
+
+  ```SQL
 SELECT
     MIN([DOLLAR_COST_POINTS_REDEEMED]) AS Minimum_Dollar_Cost,
     MAX([DOLLAR_COST_POINTS_REDEEMED]) AS Maximum_Dollar_Cost,
@@ -328,6 +375,7 @@ SELECT
     SUM(CASE WHEN [DOLLAR_COST_POINTS_REDEEMED] < 0 THEN 1 ELSE 0 END) AS Negative_Dollar_Cost,
     SUM(CASE WHEN [DOLLAR_COST_POINTS_REDEEMED] = 0 THEN 1 ELSE 0 END) AS Zero_Dollar_Cost
 FROM [CUSTOMER_FLIGHT];
+```
 
 These checks were used to identify negative values, zero values, and unusual numerical patterns that could affect flight activity and loyalty-point analysis.
 
@@ -337,41 +385,63 @@ These checks were used to identify negative values, zero values, and unusual num
 
 
 
-	Internal Consistency Checks
-Relationships between flight activity and other measures were also investigated. For example:
+##### 	Internal Consistency Checks
+
+Relationships between flight activity and other measures were also investigated.
+
+```SQL
 SELECT
     COUNT(*) AS Inconsistent_Records
 FROM [CUSTOMER_FLIGHT]
 WHERE [TOTAL_FLIGHTS] = 0
   AND [DISTANCE] > 0;
+```
 
+```SQL
 SELECT
     COUNT(*) AS Inconsistent_Records
 FROM [CUSTOMER_FLIGHT]
 WHERE [POINTS_REDEEMED] = 0
   AND [DOLLAR_COST_POINTS_REDEEMED] > 0;
+```
 
+```SQL
 SELECT
     COUNT(*) AS Inconsistent_Records
 FROM [CUSTOMER_FLIGHT]
 WHERE [POINTS_REDEEMED] > 0
   AND [DOLLAR_COST_POINTS_REDEEMED] = 0;
+```
+
 Additional checks were performed to identify records requiring investigation:
+
+```SQL
 SELECT
     COUNT(*) AS Records_To_Investigate
 FROM [CUSTOMER_FLIGHT]
 WHERE [TOTAL_FLIGHTS] = 0
   AND [POINTS_ACCUMULATED] > 0;
+```
+
+```SQL
 SELECT
     COUNT(*) AS Records_To_Investigate
 FROM [CUSTOMER_FLIGHT]
 WHERE [TOTAL_FLIGHTS] > 0
-  AND [POINTS_ACCUMULATED] = 0; 
+  AND [POINTS_ACCUMULATED] = 0;
+```
+
 These checks helped determine whether unusual combinations of values represented potential data-quality issues.
 
-4. CUSTOMER_LOYALTY Data Cleaning
+
+
+**4. CUSTOMER_LOYALTY Data Cleaning**
+
 The CUSTOMER_LOYALTY table was assessed for structure, NULL values, salary quality, customer uniqueness, and the validity of customer attributes.
-	Column and Data Type Assessment
+
+-	Column and Data Type Assessment
+
+  ```SQL
 SELECT
     COLUMN_NAME,
     DATA_TYPE,
@@ -379,9 +449,14 @@ SELECT
 FROM INFORMATION_SCHEMA.COLUMNS
 WHERE TABLE_NAME = 'CUSTOMER_LOYALTY'
 ORDER BY ORDINAL_POSITION;
+```
 
-	NULL Value Assessment
+
+-	NULL Value Assessment
+  
 NULL values were assessed across the customer loyalty fields:
+
+```SQL
 SELECT
     COUNT(*) AS Total_Rows,
     SUM(CASE WHEN [LOYALTY_NUMBER] IS NULL THEN 1 ELSE 0 END) AS Loyalty_Number_NULL,
@@ -401,16 +476,26 @@ SELECT
     SUM(CASE WHEN [CANCELLATION_YEAR] IS NULL THEN 1 ELSE 0 END) AS Cancellation_Year_NULL,
     SUM(CASE WHEN [CANCELLATION_MONTH] IS NULL THEN 1 ELSE 0 END) AS Cancellation_Month_NULL
 FROM [CUSTOMER_LOYALTY];
+```
+
 NULL values were reviewed according to the role of each field. In particular, cancellation-year and cancellation-month NULLs were retained because they represent members who had not cancelled.
 
-	Salary Validation and Cleaning
+
+-	Salary Validation and Cleaning
+  
 Salary values were specifically investigated for NULL, negative, zero, and positive values.
+
+```SQL
 SELECT
     COUNT(*) AS Negative_Salary_Records,
     MIN([SALARY]) AS Lowest_Salary
 FROM [CUSTOMER_LOYALTY]
 WHERE [SALARY] < 0;
+```
+
 Negative salary records were further examined by education:
+
+```SQL
 SELECT
     [EDUCATION],
     COUNT(*) AS Negative_Salary_Records,
@@ -420,8 +505,11 @@ FROM [CUSTOMER_LOYALTY]
 WHERE [SALARY] < 0
 GROUP BY [EDUCATION]
 ORDER BY Negative_Salary_Records DESC;
+```
 
 The individual records were also reviewed:
+
+```SQL
 SELECT
     [LOYALTY_NUMBER],
     [EDUCATION],
@@ -434,14 +522,20 @@ SELECT
 FROM [CUSTOMER_LOYALTY]
 WHERE [SALARY] < 0
 ORDER BY [SALARY];
+```
 
 Zero salary records were also checked:
+
+```SQL
 SELECT
     COUNT(*) AS Zero_Salary_Records
 FROM [CUSTOMER_LOYALTY]
 WHERE [SALARY] = 0;
+```
 
 After investigating the salary values, a cleaned customer loyalty table was created in which negative salary values were converted to NULL rather than being retained as valid salaries:
+
+```SQL
 SELECT
     [LOYALTY_NUMBER],
     [COUNTRY],
@@ -464,8 +558,11 @@ SELECT
     [CANCELLATION_MONTH]
 INTO [CUSTOMER_LOYALTY_CLEANED]
 FROM [CUSTOMER_LOYALTY];
+```
 
 The cleaned salary field was then rechecked:
+
+```SQL
 SELECT
     COUNT(*) AS Total_Rows,
     SUM(CASE WHEN [SALARY] < 0 THEN 1 ELSE 0 END) AS Negative_Salaries,
@@ -473,6 +570,8 @@ SELECT
     SUM(CASE WHEN [SALARY] = 0 THEN 1 ELSE 0 END) AS Zero_Salaries,
     SUM(CASE WHEN [SALARY] > 0 THEN 1 ELSE 0 END) AS Positive_Salaries
 FROM [CUSTOMER_LOYALTY_CLEANED];
+```
+
 This ensured that negative salary values were no longer treated as valid financial information.
 
 
@@ -482,9 +581,12 @@ This ensured that negative salary values were no longer treated as valid financi
 
 
 
-5. CUSTOMER_LOYALTY Postal Code Cleaning
+**5. CUSTOMER_LOYALTY Postal Code Cleaning**
+
 Postal codes were investigated because geographical analysis required valid Canadian postal-code formats.
 The following query was used to identify records that did not follow the expected Canadian postal-code pattern:
+
+```SQL
 SELECT
     [POSTAL_CODE],
     COUNT(*) AS Customer_Count
@@ -495,7 +597,11 @@ WHERE [POSTAL_CODE] NOT LIKE '[A-Z][0-9][A-Z] [0-9][A-Z][0-9]'
    OR SUBSTRING([POSTAL_CODE], 5, 1) IN ('D','F','I','O','Q','U')
 GROUP BY [POSTAL_CODE]
 ORDER BY Customer_Count DESC;
+```
+
 Further validation was performed to identify invalid leading characters:
+
+```SQL
 SELECT
     [POSTAL_CODE],
     COUNT(*) AS Customer_Count
@@ -504,7 +610,11 @@ WHERE [POSTAL_CODE] NOT LIKE '[A-Z][0-9][A-Z] [0-9][A-Z][0-9]'
    OR LEFT([POSTAL_CODE], 1) IN ('D','F','I','O','Q','U','W','Z')
 GROUP BY [POSTAL_CODE]
 ORDER BY Customer_Count DESC;
+```
+
 Three specific invalid postal codes were identified and investigated:
+
+```SQL
 SELECT
     [POSTAL_CODE],
     COUNT(*) AS Customer_Count
@@ -522,19 +632,33 @@ SELECT
     COUNT([POSTAL_CODE]) AS Non_NULL_Postal_Codes,
     SUM(CASE WHEN [POSTAL_CODE] IS NULL THEN 1 ELSE 0 END) AS NULL_Postal_Codes
 FROM [CUSTOMER_LOYALTY_CLEANED];
+```
+
 A total of 921 invalid postal-code records were identified during the cleaning process, leaving 15,816 valid postal-code records for geographical analysis.
 
-6. CUSTOMER_LOYALTY Uniqueness Check
+
+
+**6. CUSTOMER_LOYALTY Uniqueness Check**
+
 After creating the cleaned customer loyalty table, the number of records and unique loyalty numbers were confirmed:
+
+```SQL
 SELECT
     COUNT(*) AS Total_Rows,
     COUNT(DISTINCT [LOYALTY_NUMBER]) AS Unique_Loyalty_Numbers
 FROM [CUSTOMER_LOYALTY_CLEANED];
+```
+
 The cleaned table contained 16,737 unique loyalty members, confirming that the loyalty number could be used as the customer identifier for subsequent analysis and table relationships.
 
-7. CALENDAR Table Validation and Cleaning
+
+**7. CALENDAR Table Validation and Cleaning**
+
 The CALENDAR table contained 2,557 records and was reviewed to ensure that the date dimension was complete and that its derived date fields were correctly calculated.
-	Calendar Structure
+
+-	Calendar Structure
+
+  ```SQL
 SELECT
     COLUMN_NAME,
     DATA_TYPE,
@@ -544,23 +668,31 @@ FROM INFORMATION_SCHEMA.COLUMNS
 WHERE TABLE_SCHEMA = 'dbo'
   AND TABLE_NAME = 'Calendar'
 ORDER BY ORDINAL_POSITION;
+```
 
-	Date Range and NULL Assessment
+- Date Range and NULL Assessment
+
+```SQL
 SELECT
     MIN([Date]) AS Minimum_Date,
     MAX([Date]) AS Maximum_Date,
     COUNT([Date]) AS Non_NULL_Dates,
     COUNT(DISTINCT [Date]) AS Unique_Dates,
     SUM(CASE WHEN [Date] IS NULL THEN 1 ELSE 0 END) AS NULL_Dates
-FROM [dbo].[Calendar];
+FROM [Calendar];
+```
 
-	Missing Date Sequence Check
+-	Missing Date Sequence Check
+  
 The calendar was checked to ensure that dates followed a continuous daily sequence:
-WITH DateCheck AS (
+
+```SQL
+WITH DateCheck AS
+(
     SELECT
         [Date],
         LEAD([Date]) OVER (ORDER BY [Date]) AS Next_Date
-    FROM [dbo].[Calendar]
+    FROM [Calendar]
 )
 SELECT
     [Date] AS Current_Date,
@@ -569,54 +701,90 @@ SELECT
 FROM DateCheck
 WHERE Next_Date IS NOT NULL
   AND DATEDIFF(DAY, [Date], Next_Date) <> 1;
+```
+  
 A separate check was also used to identify missing date gaps:
-SELECT COUNT(*) AS Missing_Date_Gaps
-FROM [dbo].[Calendar] c
+
+```SQL
+SELECT
+    COUNT(*) AS Missing_Date_Gaps
+FROM [Calendar] AS CalendarTable
 WHERE NOT EXISTS
 (
     SELECT 1
-    FROM [dbo].[Calendar] c2
-    WHERE c2.[Date] = DATEADD(DAY, 1, c.[Date])
+    FROM [Calendar] AS NextCalendarDate
+    WHERE NextCalendarDate.[Date] =
+          DATEADD(DAY, 1, CalendarTable.[Date])
 )
-AND c.[Date] < (SELECT MAX([Date]) FROM [dbo].[Calendar]);
-Start-of-Year Validation
-SELECT COUNT(*) AS Incorrect_Start_of_Year
-FROM [dbo].[Calendar]
-WHERE [Start_of_Year] <> DATEFROMPARTS(YEAR([Date]), 1, 1);
+AND CalendarTable.[Date] <
+(
+    SELECT MAX([Date])
+    FROM [Calendar]
+);
+```
 
-	Start-of-Month Validation and Correction
+
+- Start-of-Year Validation
+
+```SQL
+SELECT COUNT(*) AS Incorrect_Start_of_Year
+FROM [Calendar]
+WHERE [Start_of_Year] <> DATEFROMPARTS(YEAR([Date]), 1, 1);
+```
+
+-	Start-of-Month Validation and Correction
+  
 The start-of-month field was checked against the actual first day of each month:
+
+```SQL
 SELECT COUNT(*) AS Incorrect_Start_of_Month
-FROM [dbo].[Calendar]
+FROM [Calendar]
 WHERE [Start_of_Month] <> DATEFROMPARTS(YEAR([Date]), MONTH([Date]), 1);
+```
 
 The field was then corrected using the appropriate date calculation:
-UPDATE [dbo].[Calendar]
+
+```SQL
+UPDATE [Calendar]
 SET [Start_of_Month] = DATEFROMPARTS(YEAR([Date]), MONTH([Date]), 1);
+```
 
 The correction was subsequently validated:
-SELECT COUNT(*) AS Incorrect_Start_of_Month
-FROM [dbo].[Calendar]
-WHERE [Start_of_Month] <> DATEFROMPARTS(YEAR([Date]), MONTH([Date]), 1);
 
-	Start-of-Quarter Validation and Correction
+```SQL
+SELECT COUNT(*) AS Incorrect_Start_of_Month
+FROM [Calendar]
+WHERE [Start_of_Month] <> DATEFROMPARTS(YEAR([Date]), MONTH([Date]), 1);
+```
+
+- Start-of-Quarter Validation and Correction
+  
 The start-of-quarter field was also checked:
+
+```SQL
 SELECT COUNT(*) AS Incorrect_Start_of_Quarter
-FROM [dbo].[Calendar]
+FROM [Calendar]
 WHERE [Start_of_Quarter] <> DATEADD(
     QUARTER,
     DATEDIFF(QUARTER, 0, [Date]),
     0
 );
+```
+
 The field was corrected using:
-UPDATE [dbo].[Calendar]
+
+```SQL
+UPDATE [Calendar]
 SET [Start_of_Quarter] = DATEADD(
     QUARTER,
     DATEDIFF(QUARTER, 0, [Date]),
     0
 );
+```
 
 The correction was then validated:
+
+```SQL
 SELECT COUNT(*) AS Incorrect_Start_of_Quarter
 FROM [dbo].[Calendar]
 WHERE [Start_of_Quarter] <> DATEADD(
@@ -624,52 +792,77 @@ WHERE [Start_of_Quarter] <> DATEADD(
     DATEDIFF(QUARTER, 0, [Date]),
     0
 );
+```
+
 Finally, the completeness of the key calendar fields was checked:
+
+
+```SQL
 SELECT
     COUNT(*) AS Total_Rows,
     COUNT([Date]) AS Date_Count,
     COUNT([Start_of_Year]) AS Start_of_Year_Count,
     COUNT([Start_of_Quarter]) AS Start_of_Quarter_Count,
     COUNT([Start_of_Month]) AS Start_of_Month_Count
-FROM [dbo].[Calendar];
+FROM [Calendar];
+```
 
-8. Final Customer Flight Integrity Check
+
+**8. Final Customer Flight Integrity Check**
+
 After cleaning, the flight table was checked again for loyalty-number completeness and uniqueness:
+
+```SQL
 SELECT
     COUNT(*) AS Total_Rows,
     COUNT([LOYALTY_NUMBER]) AS Non_NULL_Loyalty_Numbers,
     SUM(CASE WHEN [LOYALTY_NUMBER] IS NULL THEN 1 ELSE 0 END) AS NULL_Loyalty_Numbers,
     COUNT(DISTINCT [LOYALTY_NUMBER]) AS Unique_Loyalty_Numbers
-FROM [dbo].[CUSTOMER_FLIGHT_CLEANED];
+FROM [CUSTOMER_FLIGHT_CLEANED];
+```
 
 The relationship between the cleaned flight and customer loyalty tables was also checked to identify flight records whose loyalty numbers did not exist in the customer table:
-SELECT COUNT(DISTINCT f.[LOYALTY_NUMBER]) AS Unmatched_Loyalty_Numbers
-FROM [dbo].[CUSTOMER_FLIGHT_CLEANED] f
-LEFT JOIN [dbo].[CUSTOMER_LOYALTY_CLEANED] l
-    ON f.[LOYALTY_NUMBER] = l.[LOYALTY_NUMBER]
-WHERE l.[LOYALTY_NUMBER] IS NULL;
+
+```SQL
+SELECT
+    COUNT(DISTINCT Customer_Flight_Cleaned.[LOYALTY_NUMBER]) AS Unmatched_Loyalty_Numbers
+FROM [CUSTOMER_FLIGHT_CLEANED] AS Customer_Flight_Cleaned
+LEFT JOIN [CUSTOMER_LOYALTY_CLEANED] AS Customer_Loyalty_Cleaned
+    ON CustomerFlightCleaned.[LOYALTY_NUMBER] =
+       CustomerLoyaltyCleaned.[LOYALTY_NUMBER]
+WHERE CustomerLoyaltyCleaned.[LOYALTY_NUMBER] IS NULL;
+```
+
+
 This final check ensured that the cleaned flight and customer loyalty tables were suitable for joining and subsequent analysis.
-Cleaning Outcome
+
+## Cleaning Outcome
 The cleaning process produced the following analytical dataset:
-	CUSTOMER_FLIGHT: 392,936 original records reduced to 391,014 unique records after removing exact duplicate records.
-	CUSTOMER_LOYALTY: 16,737 unique loyalty members.
-	Postal Codes: 921 invalid postal-code records identified, with 15,816 valid postal-code records remaining.
-	CALENDAR: 2,557 records, with date fields reviewed and incorrect start-of-month and start-of-quarter values corrected.
-	Salary: Negative salary values were converted to NULL so that they would not be treated as valid salary values.
+
+-	CUSTOMER_FLIGHT: 392,936 original records reduced to 391,014 unique records after removing exact duplicate records.
+-	CUSTOMER_LOYALTY: 16,737 unique loyalty members.
+-	Postal Codes: 921 invalid postal-code records identified, with 15,816 valid postal-code records remaining.
+-	CALENDAR: 2,557 records, with date fields reviewed and incorrect start-of-month and start-of-quarter values corrected.
+-	Salary: Negative salary values were converted to NULL so that they would not be treated as valid salary values.
+  
 The cleaned tables were subsequently used for the business analysis of the 2018 promotional campaign, customer demographic adoption, loyalty membership, and summer 2018 flight activity.
 
 
-•	Data Analysis and Insight
+##	Data Analysis and Insight
+
 The objectives of this analysis is to the provide answers to the following questions:
+
 1.	What impact did the campaign have on loyalty program memberships (gross / net)?
 2.	Was the campaign adoption more successful for certain demographics of loyalty members?
 3.	What impact did the campaign have on booked flights during summer?
 
-1.	What impact did the campaign have on loyalty program memberships (gross / net)?
+**1.	What impact did the campaign have on loyalty program memberships (gross / net)?**
+
 This question seeks to evaluate the impact of the 2018 promotional campaign on loyalty program membership by measuring the number of customers who enrolled during the campaign period and determining how many remained active after accounting for cancellations.
 The analysis focuses on two key measures:
-	Gross Campaign Membership: The total number of customers who enrolled in the loyalty program through the campaign.
-	Net Campaign Membership: The number of campaign members remaining after subtracting customers who subsequently cancelled their membership.
+
+-	Gross Campaign Membership: The total number of customers who enrolled in the loyalty program through the campaign.
+-	Net Campaign Membership: The number of campaign members remaining after subtracting customers who subsequently cancelled their membership.
 
 Understanding gross and net membership growth helps evaluate the campaign's ability to attract new members and retain them after enrolment. A high gross enrolment indicates strong campaign reach, while a high net membership figure indicates that the campaign was also successful in retaining members.
 
