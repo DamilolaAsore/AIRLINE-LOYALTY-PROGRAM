@@ -982,17 +982,14 @@ The same analytical approach was applied to the other demographic variables to i
 
 The analysis produced the following campaign adoption rates across the major demographic groups:
 
+
 - Gender
 
   
-
-
-  | Gender | Campaign Members | Total Members | Adoption Rate |
+| Gender | Campaign Members | Total Members | Adoption Rate |
 |--------|-----------------:|--------------:|--------------:|
 | Female | 494              | 8,410         | 5.87%         |
 | Male   | 477              | 8,327         | 5.73%         |
-
-
 
 
 
@@ -1003,8 +1000,7 @@ Female members had a slightly higher campaign adoption rate than male members.
 
 
   
-
-  | Education            | Campaign Members | Total Members | Adoption Rate |
+| Education            | Campaign Members | Total Members | Adoption Rate |
 |----------------------|-----------------:|--------------:|--------------:|
 | High School or Below | 50               | 782           | 6.39%         |
 | Bachelor             | 632              | 10,475        | 6.03%         |
@@ -1013,17 +1009,15 @@ Female members had a slightly higher campaign adoption rate than male members.
 | Master               | 19               | 508           | 3.74%         |
 
 
-
-
-
-
 Education showed a clearer difference in campaign adoption than gender. Members with High School or Below education had the highest adoption rate at 6.39%, while members with a Master's degree had the lowest at 3.74%.
+
+
 
 - Marital Status
 
   
 
-  | Marital Status | Campaign Members | Total Members | Adoption Rate |
+| Marital Status | Campaign Members | Total Members | Adoption Rate |
 |----------------|-----------------:|--------------:|--------------:|
 | Divorced       | 155              | 2,518         | 6.16%         |
 | Single         | 258              | 4,484         | 5.75%         |
@@ -1039,7 +1033,7 @@ Divorced members recorded the highest adoption rate at 6.16%, although the diffe
 
   
 
-  | Loyalty Card | Campaign Members | Total Members | Adoption Rate |
+| Loyalty Card | Campaign Members | Total Members | Adoption Rate |
 |-------------|-----------------:|--------------:|--------------:|
 | Aurora      | 208              | 3,429         | 6.07%         |
 | Nova        | 330              | 5,671         | 5.82%         |
