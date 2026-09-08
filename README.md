@@ -24,12 +24,14 @@ The analysis was conducted using SQL Server Management Studio (SSMS) to explore 
 
 The scope of this project includes:
 
--	Time Period: Analysis of customer loyalty and flight activity data covering 2017 and 2018, with specific focus on the 2018 promotional campaign and summer flight activity from June to August 2018.
--	Geographical Scope: Customers across the Canadian provinces and cities represented in the dataset.
--	Customer Focus: Loyalty program membership, promotional campaign adoption, customer demographics, customer lifetime value (CLV), and membership cancellation.
--	Flight Focus: Total flights, distance travelled, points accumulated, points redeemed, and the dollar cost of redeemed points.
--	Key Variables: Enrolment type, loyalty card, gender, education, marital status, salary, CLV, province, city, enrolment and cancellation details, total flights, month, year, distance, points accumulated, and points redeemed.
-Analysis:
+-	**Time Period:** Analysis of customer loyalty and flight activity data covering 2017 and 2018, with specific focus on the 2018 promotional campaign and summer flight activity from June to August 2018.
+-	**Geographical Scope:** Customers across the Canadian provinces and cities represented in the dataset.
+-	**Customer Focus:** Loyalty program membership, promotional campaign adoption, customer demographics, customer lifetime value (CLV), and membership cancellation.
+-	**Flight Focus:** Total flights, distance travelled, points accumulated, points redeemed, and the dollar cost of redeemed points.
+-	**Key Variables:** Enrolment type, loyalty card, gender, education, marital status, salary, CLV, province, city, enrolment and cancellation details, total flights, month, year, distance, points accumulated, and points redeemed.
+  
+##### Analysis:
+
 -	Evaluating the impact of the 2018 promotional campaign on loyalty program membership.
 -	Comparing campaign adoption across different customer demographic groups.
 -	Identifying customer locations and demographic segments with higher or lower campaign adoption.
@@ -37,16 +39,21 @@ Analysis:
 -	Identifying patterns in customer flight behaviour and loyalty program engagement.
 -	Generating insights and recommendations to support future loyalty campaigns, customer engagement, and retention strategies.
 
+  
+
 ##	Project Objective
 
 The main business objective of this project is to evaluate the effectiveness of the airline's loyalty program and the 2018 promotional campaign by analysing customer membership and flight behaviour.
 The analysis aims to:
 
-- Measure Campaign Performance: Determine the impact of the 2018 promotional campaign on loyalty program membership, including campaign enrolments, cancellations, retention, and net active members.
--	Identify Target Customer Segments: Determine which demographic groups and geographical locations showed higher or lower campaign adoption.
--	Evaluate Customer Engagement: Compare flight activity between campaign and Standard loyalty members during the summer of 2018.
--	Identify Customer Behaviour Patterns: Analyze loyalty membership and flight activity patterns to understand customer engagement with the program.
--	Support Business Decisions: Provide data-driven insights and recommendations that can help improve future promotional campaigns, customer retention, loyalty program participation, and customer engagement.
+- **Measure Campaign Performance:** Determine the impact of the 2018 promotional campaign on loyalty program membership, including campaign enrolments, cancellations, retention, and net active members.
+-	**Identify Target Customer Segments:** Determine which demographic groups and geographical locations showed higher or lower campaign adoption.
+-	**Evaluate Customer Engagement:** Compare flight activity between campaign and Standard loyalty members during the summer of 2018.
+-	**Identify Customer Behaviour Patterns:** Analyze loyalty membership and flight activity patterns to understand customer engagement with the program.
+-	**Support Business Decisions:** Provide data-driven insights and recommendations that can help improve future promotional campaigns, customer retention, loyalty program participation, and customer engagement.
+
+
+
 
 
 ##	Document Purpose
@@ -60,6 +67,9 @@ This document serves as the primary analytical reference for the Airline Loyalty
   
 The analysis presented in this document will support data-driven decision-making by providing a clear understanding of customer behaviour and identifying opportunities to improve the airline's loyalty program strategy.
 
+
+
+
 ##	Use Case
 
 This analysis provides valuable insights that can support improvements across several areas of the airline's loyalty program. Key use cases include:
@@ -70,29 +80,44 @@ This analysis provides valuable insights that can support improvements across se
 -	Marketing Strategy: Use customer behaviour insights to improve the targeting and design of future loyalty campaigns.
 -	Retention Strategy: Identify opportunities to strengthen member engagement and reduce loyalty program cancellations.
 
+
+
+
 ##	Data Source
 
 The dataset utilized for this analysis was obtained from Maven Analytics Website, a reputable online platform known for providing data analytics training, resources, and practice datasets. Maven Analytics offers a wide range of datasets across various domains, allowing users to enhance their analytical skills through hands-on experience with real-world data.
+
+
+
 
 
 ##	Dataset Overview
 
 The Airline Loyalty Program dataset contains customer loyalty and flight activity information used to analyze customer behaviour, loyalty membership, promotional campaign adoption, and flight activity. The dataset covers customer records and flight activity for 2017 and 2018 and consists of three main tables: CUSTOMER_LOYALTY, CUSTOMER_FLIGHT, and CALENDAR.
 
+
 ##### Content and Structure
 
 The dataset is structured to include key attributes such as:
 
--	Customer Information: Country, province, city, gender, education, salary, and marital status.
--	Loyalty Information: Loyalty card, enrolment type, enrolment date, cancellation details, and customer lifetime value (CLV).
--	Flight Activity: Total flights, distance travelled, points accumulated, points redeemed, and dollar cost of points redeemed.
--	Calendar Information: Date-related fields used to support time-based analysis.
+-	**Customer Information:** Country, province, city, gender, education, salary, and marital status.
+-	**Loyalty Information:** Loyalty card, enrolment type, enrolment date, cancellation details, and customer lifetime value (CLV).
+-	**Flight Activity:** Total flights, distance travelled, points accumulated, points redeemed, and dollar cost of points redeemed.
+-	**Calendar Information:** Date-related fields used to support time-based analysis.
   
 The CUSTOMER_LOYALTY table contains 16,737 members, the CUSTOMER_FLIGHT table contains 391,014 flight records, and the CALENDAR table contains 2,557 records.
+
 
 ##### Purpose of the Dataset
 
 The dataset is used to evaluate the performance of the airline's loyalty program, with particular focus on the 2018 promotional campaign, customer adoption across different demographic groups, and flight activity during the summer of 2018. The analysis helps identify customer behaviour patterns and opportunities for improving loyalty program engagement and retention.
+
+
+
+
+
+
+
 
 ##	Data Cleaning and Processing
 
@@ -100,23 +125,33 @@ The data cleaning process was carried out in SQL Server Management Studio (SSMS)
 
 The process included reviewing the imported tables, validating their structure and data types, checking for NULL values and duplicates, investigating invalid and inconsistent records, correcting identified data-quality issues, and creating cleaned versions of the tables.
 
+
 **1. Initial Table and Row Count Assessment**
 
 The first step was to confirm that the three tables had been successfully imported into SQL Server and to establish their initial record counts.
 
+
 ```SQL
-SELECT COUNT(*) AS Total_Rows
-FROM Calendar;
+SELECT COUNT(*) AS TOTAL_ROWS
+FROM CALENDAR
 ```
+
+##### RESULT
+
+| Total Rows |
+|-----------:|
+| 2,557      |
+
+
+```SQL
+SELECT COUNT(*) AS TOTAL-ROWS
+FROM CUSTOMER_FLIGHT
+```
+
 
 ```SQL
 SELECT COUNT(*) AS Total_Rows
-FROM Customer_Flight;
-```
-
-```SQL
-SELECT COUNT(*) AS Total_Rows
-FROM Customer_Loyalty;
+FROM CUSTOMER_LOYALTY
 ```
 
 The initial assessment established the size of the imported dataset:
@@ -134,15 +169,18 @@ SELECT
     TABLE_NAME
 FROM INFORMATION_SCHEMA.TABLES
 WHERE TABLE_TYPE = 'BASE TABLE'
-ORDER BY TABLE_NAME;
+ORDER BY TABLE_NAME
 ```
 
 This confirmed the tables available in the SQL Server database before the cleaning and validation process began.
 
 
+
+
 **2. CUSTOMER_FLIGHT Data Cleaning**
 
 The CUSTOMER_FLIGHT table contained 392,936 records before cleaning. The table was assessed for its structure, NULL values, duplicate records, valid ranges, and internal consistency.
+
 
 -	Column and Data Type Assessment
 
@@ -157,10 +195,11 @@ SELECT
     IS_NULLABLE
 FROM INFORMATION_SCHEMA.COLUMNS
 WHERE TABLE_NAME IN ('CUSTOMER_FLIGHT')
-ORDER BY TABLE_NAME, ORDINAL_POSITION;
+ORDER BY TABLE_NAME, ORDINAL_POSITION
 ```
 
 This ensured that the flight fields were stored using appropriate data types before analysis.
+
 
 -	NULL Value Assessment
   
@@ -168,7 +207,7 @@ NULL values were assessed across all major flight activity fields:
 
 ```SQL
 SELECT
-    COUNT(*) AS Total_Rows,
+    COUNT(*) AS TOTAL_ROWS,
     SUM(CASE WHEN [LOYALTY_NUMBER] IS NULL THEN 1 ELSE 0 END) AS Null_Loyalty_Number,
     SUM(CASE WHEN [YEAR] IS NULL THEN 1 ELSE 0 END) AS Null_Year,
     SUM(CASE WHEN [MONTH] IS NULL THEN 1 ELSE 0 END) AS Null_Month,
@@ -177,10 +216,28 @@ SELECT
     SUM(CASE WHEN [POINTS_ACCUMULATED] IS NULL THEN 1 ELSE 0 END) AS Null_Points_Accumulated,
     SUM(CASE WHEN [POINTS_REDEEMED] IS NULL THEN 1 ELSE 0 END) AS Null_Points_Redeemed,
     SUM(CASE WHEN [DOLLAR_COST_POINTS_REDEEMED] IS NULL THEN 1 ELSE 0 END) AS Null_Dollar_Cost
-FROM [CUSTOMER_FLIGHT];
+FROM [CUSTOMER_FLIGHT]
 ```
 
+
+| TABLE_NAME      | COLUMN_NAME                    | DATA_TYPE | CHARACTER_MAXIMUM_LENGTH | IS_NULLABLE |
+|-----------------|--------------------------------|-----------|--------------------------|-------------|
+| CUSTOMER_FLIGHT | Loyalty_Number                 | bigint    | NULL                     | YES         |
+| CUSTOMER_FLIGHT | Year                           | bigint    | NULL                     | YES         |
+| CUSTOMER_FLIGHT | Month                          | bigint    | NULL                     | YES         |
+| CUSTOMER_FLIGHT | Total_Flights                  | bigint    | NULL                     | YES         |
+| CUSTOMER_FLIGHT | Distance                       | bigint    | NULL                     | YES         |
+| CUSTOMER_FLIGHT | Points_Accumulated             | float     | NULL                     | YES         |
+| CUSTOMER_FLIGHT | Points_Redeemed                | bigint    | NULL                     | YES         |
+| CUSTOMER_FLIGHT | Dollar_Cost_Points_Redeemed    | bigint    | NULL                     | YES         |
+
+
 The NULL assessment was used to confirm the completeness of the flight data before further processing.
+
+
+
+
+
 
 -	Duplicate Record Identification
   
