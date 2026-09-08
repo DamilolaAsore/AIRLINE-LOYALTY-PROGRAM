@@ -442,17 +442,34 @@ FROM (
 
 After removing duplicates, the numerical flight fields were examined for invalid or unusual values.
 
--	Total Flights
-  
-  ```SQL
+- TOTAL_FLIGHTS
+
+
+```SQL
 SELECT
-    MIN([TOTAL_FLIGHTS]) AS Minimum_Flights,
-    MAX([TOTAL_FLIGHTS]) AS Maximum_Flights,
-    AVG(CAST([TOTAL_FLIGHTS] AS DECIMAL(18,2))) AS Average_Flights,
-    SUM(CASE WHEN [TOTAL_FLIGHTS] < 0 THEN 1 ELSE 0 END) AS Negative_Flights,
-    SUM(CASE WHEN [TOTAL_FLIGHTS] = 0 THEN 1 ELSE 0 END) AS Zero_Flights
-FROM [CUSTOMER_FLIGHT];
+    MIN([TOTAL_FLIGHTS]) AS MINIMUM_FLIGHTS,
+    MAX([TOTAL_FLIGHTS]) AS MAXIMUM_FLIGHTS,
+    AVG(CAST([TOTAL_FLIGHTS] AS DECIMAL(18,2))) AS AVERAGE_FLIGHTS,
+    SUM(CASE WHEN [TOTAL_FLIGHTS] < 0 THEN 1 ELSE 0 END) AS NEGATIVE_FLIGHTS,
+    SUM(CASE WHEN [TOTAL_FLIGHTS] = 0 THEN 1 ELSE 0 END) AS ZERO_FLIGHTS
+FROM [CUSTOMER_FLIGHT]
 ```
+
+
+| MINIMUM_FLIGHTS | MAXIMUM_FLIGHTS | AVERAGE_FLIGHTS | NEGATIVE_FLIGHTS  | ZERO_FLIGHTS |
+|--------:|--------:|--------:|-------------------:|-------------------:|
+| 0       | 28      | 1.294887 | 0                  | 214,122            |
+
+
+
+
+
+
+
+
+
+
+
 
 -	Distance
 
