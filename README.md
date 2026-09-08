@@ -1,6 +1,10 @@
 # AIRLINE-LOYALTY-PROGRAM
 A SQL project analyzing an airline loyalty program. The dataset encompasses customer loyalty profiles, flight activity, enrollment and cancellation details, and calendar data to uncover actionable insights into promotional campaign performance, customer adoption, retention, and flight behavior to improve loyalty program and marketing strategies.
 
+
+
+
+
 ## Table of Content
 
 -	Project Overview
@@ -15,10 +19,17 @@ A SQL project analyzing an airline loyalty program. The dataset encompasses cust
 -	Recommendation
 -	Conclusion
 
+
+
+
 ##	Project Overview
 
 The project analyses the Airline Loyalty Program dataset to understand customer loyalty behaviour and flight activity. The project focuses on evaluating the performance of the 2018 promotional campaign, identifying customer demographics with higher campaign adoption, and assessing flight activity during the summer period.
 The analysis was conducted using SQL Server Management Studio (SSMS) to explore customer and flight data, calculate key performance metrics, identify patterns and trends, and generate insights that can support data-driven decisions for improving customer engagement, loyalty program participation, and flight activity.
+
+
+
+
 
 ##	Project Scope
 
@@ -41,9 +52,11 @@ The scope of this project includes:
 
   
 
+
 ##	Project Objective
 
 The main business objective of this project is to evaluate the effectiveness of the airline's loyalty program and the 2018 promotional campaign by analysing customer membership and flight behaviour.
+
 The analysis aims to:
 
 - **Measure Campaign Performance:** Determine the impact of the 2018 promotional campaign on loyalty program membership, including campaign enrolments, cancellations, retention, and net active members.
@@ -51,6 +64,7 @@ The analysis aims to:
 -	**Evaluate Customer Engagement:** Compare flight activity between campaign and Standard loyalty members during the summer of 2018.
 -	**Identify Customer Behaviour Patterns:** Analyze loyalty membership and flight activity patterns to understand customer engagement with the program.
 -	**Support Business Decisions:** Provide data-driven insights and recommendations that can help improve future promotional campaigns, customer retention, loyalty program participation, and customer engagement.
+
 
 
 
@@ -74,11 +88,11 @@ The analysis presented in this document will support data-driven decision-making
 
 This analysis provides valuable insights that can support improvements across several areas of the airline's loyalty program. Key use cases include:
 
--	Campaign Evaluation: Assess the effectiveness of promotional campaigns in attracting and retaining loyalty members.
--	Customer Segmentation: Identify demographic and geographical groups with higher campaign adoption.
--	Customer Engagement: Understand differences in flight activity between campaign and Standard members.
--	Marketing Strategy: Use customer behaviour insights to improve the targeting and design of future loyalty campaigns.
--	Retention Strategy: Identify opportunities to strengthen member engagement and reduce loyalty program cancellations.
+-	**Campaign Evaluation:** Assess the effectiveness of promotional campaigns in attracting and retaining loyalty members.
+-	**Customer Segmentation:** Identify demographic and geographical groups with higher campaign adoption.
+-	**Customer Engagement:** Understand differences in flight activity between campaign and Standard members.
+-	**Marketing Strategy:** Use customer behavior insights to improve the targeting and design of future loyalty campaigns.
+-	**Retention Strategy:** Identify opportunities to strengthen member engagement and reduce loyalty program cancellations.
 
 
 
@@ -136,23 +150,42 @@ SELECT COUNT(*) AS TOTAL_ROWS
 FROM CALENDAR
 ```
 
-##### RESULT
 
-| Total Rows |
+
+| TOTAL_ROWS |
 |-----------:|
 | 2,557      |
 
 
+
+
 ```SQL
-SELECT COUNT(*) AS TOTAL-ROWS
+SELECT COUNT(*) AS TOTAL_ROWS
 FROM CUSTOMER_FLIGHT
 ```
 
 
+| TOTAL_ROWS |
+|-----------:|
+| 392,936    |
+
+
+
+
+
 ```SQL
-SELECT COUNT(*) AS Total_Rows
+SELECT COUNT(*) AS TOTAL_ROWS
 FROM CUSTOMER_LOYALTY
 ```
+
+
+| TOTAL_ROWS |
+|-----------:|
+| 16,737     |
+
+
+
+
 
 The initial assessment established the size of the imported dataset:
 
@@ -172,7 +205,16 @@ WHERE TABLE_TYPE = 'BASE TABLE'
 ORDER BY TABLE_NAME
 ```
 
+
+| TABLE_SCHEMA | TABLE_NAME |
+|--------|------------------|
+| dbo    | CALENDAR         |
+| dbo    | CUSTOMER_FLIGHT  |
+| dbo    | CUSTOMER_LOYALTY |
+
 This confirmed the tables available in the SQL Server database before the cleaning and validation process began.
+
+
 
 
 
@@ -198,7 +240,19 @@ WHERE TABLE_NAME IN ('CUSTOMER_FLIGHT')
 ORDER BY TABLE_NAME, ORDINAL_POSITION
 ```
 
+| TABLE_NAME      | COLUMN_NAME                    | DATA_TYPE | CHARACTER_MAXIMUM_LENGTH | IS_NULLABLE |
+|-----------------|--------------------------------|-----------|--------------------------|-------------|
+| CUSTOMER_FLIGHT | Loyalty_Number                 | bigint    | NULL                     | YES         |
+| CUSTOMER_FLIGHT | Year                           | bigint    | NULL                     | YES         |
+| CUSTOMER_FLIGHT | Month                          | bigint    | NULL                     | YES         |
+| CUSTOMER_FLIGHT | Total_Flights                  | bigint    | NULL                     | YES         |
+| CUSTOMER_FLIGHT | Distance                       | bigint    | NULL                     | YES         |
+| CUSTOMER_FLIGHT | Points_Accumulated             | float     | NULL                     | YES         |
+| CUSTOMER_FLIGHT | Points_Redeemed                | bigint    | NULL                     | YES         |
+| CUSTOMER_FLIGHT | Dollar_Cost_Points_Redeemed    | bigint    | NULL                     | YES         |
+
 This ensured that the flight fields were stored using appropriate data types before analysis.
+
 
 
 -	NULL Value Assessment
@@ -208,7 +262,7 @@ NULL values were assessed across all major flight activity fields:
 ```SQL
 SELECT
     COUNT(*) AS TOTAL_ROWS,
-    SUM(CASE WHEN [LOYALTY_NUMBER] IS NULL THEN 1 ELSE 0 END) AS Null_Loyalty_Number,
+    SUM(CASE WHEN [LOYALTY_NUMBER] IS NULL THEN 1 ELSE 0 END) AS NULL_LOYALTY_NUMBER,
     SUM(CASE WHEN [YEAR] IS NULL THEN 1 ELSE 0 END) AS Null_Year,
     SUM(CASE WHEN [MONTH] IS NULL THEN 1 ELSE 0 END) AS Null_Month,
     SUM(CASE WHEN [TOTAL_FLIGHTS] IS NULL THEN 1 ELSE 0 END) AS Null_Total_Flights,
@@ -220,16 +274,6 @@ FROM [CUSTOMER_FLIGHT]
 ```
 
 
-| TABLE_NAME      | COLUMN_NAME                    | DATA_TYPE | CHARACTER_MAXIMUM_LENGTH | IS_NULLABLE |
-|-----------------|--------------------------------|-----------|--------------------------|-------------|
-| CUSTOMER_FLIGHT | Loyalty_Number                 | bigint    | NULL                     | YES         |
-| CUSTOMER_FLIGHT | Year                           | bigint    | NULL                     | YES         |
-| CUSTOMER_FLIGHT | Month                          | bigint    | NULL                     | YES         |
-| CUSTOMER_FLIGHT | Total_Flights                  | bigint    | NULL                     | YES         |
-| CUSTOMER_FLIGHT | Distance                       | bigint    | NULL                     | YES         |
-| CUSTOMER_FLIGHT | Points_Accumulated             | float     | NULL                     | YES         |
-| CUSTOMER_FLIGHT | Points_Redeemed                | bigint    | NULL                     | YES         |
-| CUSTOMER_FLIGHT | Dollar_Cost_Points_Redeemed    | bigint    | NULL                     | YES         |
 
 
 The NULL assessment was used to confirm the completeness of the flight data before further processing.
