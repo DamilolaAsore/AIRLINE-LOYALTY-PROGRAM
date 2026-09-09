@@ -878,15 +878,21 @@ The following query was used to identify records that did not follow the expecte
 ```SQL
 SELECT
     [POSTAL_CODE],
-    COUNT(*) AS Customer_Count
+    COUNT(*) AS CUSTOMER_COUNT
 FROM [CUSTOMER_LOYALTY_CLEANED]
 WHERE [POSTAL_CODE] NOT LIKE '[A-Z][0-9][A-Z] [0-9][A-Z][0-9]'
    OR LEFT([POSTAL_CODE], 1) IN ('D','F','I','O','Q','U')
    OR SUBSTRING([POSTAL_CODE], 3, 1) IN ('D','F','I','O','Q','U')
    OR SUBSTRING([POSTAL_CODE], 5, 1) IN ('D','F','I','O','Q','U')
 GROUP BY [POSTAL_CODE]
-ORDER BY Customer_Count DESC;
+ORDER BY CUSTOMER_COUNT DESC
 ```
+
+|POSTAL_CODE | CUSTOMER_COUNT |
+|-------------|------:|
+| K1F 2R2     | 389   |
+| T9O 2W2     | 113   |
+
 
 Further validation was performed to identify invalid leading characters:
 
@@ -898,7 +904,7 @@ FROM [CUSTOMER_LOYALTY_CLEANED]
 WHERE [POSTAL_CODE] NOT LIKE '[A-Z][0-9][A-Z] [0-9][A-Z][0-9]'
    OR LEFT([POSTAL_CODE], 1) IN ('D','F','I','O','Q','U','W','Z')
 GROUP BY [POSTAL_CODE]
-ORDER BY Customer_Count DESC;
+ORDER BY Customer_Count DESC
 ```
 
 Three specific invalid postal codes were identified and investigated:
