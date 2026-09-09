@@ -771,17 +771,52 @@ SELECT
     [ENROLLMENT_TYPE]
 FROM [CUSTOMER_LOYALTY]
 WHERE [SALARY] < 0
-ORDER BY [SALARY];
+ORDER BY [SALARY]
 ```
+
+| LOYALTY_NUMBER | EDUCATION            | SALARY | GENDER | MARITAL_STATUS | LOYALTY_CARD | CLV    | ENROLLMENT_TYPE |
+|---------------:|----------------------|-------:|--------|----------------|--------------|---------:|-----------------|
+| 152,016        | Bachelor             | -58,486 | Female | Married        | Aurora       | 5,067.21 | 2018 Promotion  |
+| 906,428        | Bachelor             | -57,297 | Male   | Married        | Star         | 10,018.66 | 2018 Promotion |
+| 542,976        | High School or Below | -49,830 | Male   | Divorced       | Star         | 24,127.50 | 2018 Promotion |
+| 212,128        | Bachelor             | -49,001 | Male   | Married        | Nova         | 3,130.68 | 2018 Promotion |
+| 239,955        | Bachelor             | -47,310 | Female | Married        | Nova         | 6,366.23 | 2018 Promotion |
+| 232,755        | Bachelor             | -46,683 | Female | Single         | Nova         | 4,787.81 | 2018 Promotion |
+| 436,087        | Bachelor             | -46,470 | Male   | Married        | Star         | 4,786.89 | 2018 Promotion |
+| 734,647        | Bachelor             | -46,303 | Male   | Married        | Nova         | 11,280.73 | 2018 Promotion |
+| 525,245        | Bachelor             | -45,962 | Male   | Married        | Star         | 2,402.33 | 2018 Promotion |
+| 491,242        | Bachelor             | -43,234 | Male   | Married        | Star         | 7,597.91 | 2018 Promotion |
+| 347,013        | Bachelor             | -39,503 | Male   | Married        | Nova         | 6,446.71 | 2018 Promotion |
+| 790,475        | Bachelor             | -34,079 | Female | Married        | Nova         | 12,913.50 | 2018 Promotion |
+| 194,065        | Bachelor             | -31,911 | Female | Married        | Nova         | 2,888.85 | 2018 Promotion |
+| 364,596        | Bachelor             | -26,322 | Female | Single         | Aurora       | 16,710.84 | 2018 Promotion |
+| 729,561        | Bachelor             | -19,332 | Female | Divorced       | Star         | 5,308.29 | 2018 Promotion |
+| 603,070        | Bachelor             | -19,325 | Female | Single         | Star         | 2,893.74 | 2018 Promotion |
+| 430,398        | Bachelor             | -17,534 | Male   | Married        | Nova         | 49,423.80 | 2018 Promotion |
+| 959,977        | Bachelor             | -12,497 | Female | Married        | Aurora       | 9,453.00 | 2018 Promotion |
+| 115,505        | Bachelor             | -10,605 | Male   | Married        | Nova         | 5,860.17 | 2018 Promotion |
+| 366,599        | Bachelor             | -9,081  | Female | Married        | Star         | 6,915.73 | 2018 Promotion |
+
+
+
 
 Zero salary records were also checked:
 
 ```SQL
 SELECT
-    COUNT(*) AS Zero_Salary_Records
+    COUNT(*) AS ZERO_SALARY_RECORDS
 FROM [CUSTOMER_LOYALTY]
-WHERE [SALARY] = 0;
+WHERE [SALARY] = 0
 ```
+
+
+| ZERO_SALARY_RECORDS |
+|------:|
+| 0     |
+
+
+
+
 
 After investigating the salary values, a cleaned customer loyalty table was created in which negative salary values were converted to NULL rather than being retained as valid salaries:
 
@@ -807,20 +842,24 @@ SELECT
     [CANCELLATION_YEAR],
     [CANCELLATION_MONTH]
 INTO [CUSTOMER_LOYALTY_CLEANED]
-FROM [CUSTOMER_LOYALTY];
+FROM [CUSTOMER_LOYALTY]
 ```
 
 The cleaned salary field was then rechecked:
 
 ```SQL
 SELECT
-    COUNT(*) AS Total_Rows,
-    SUM(CASE WHEN [SALARY] < 0 THEN 1 ELSE 0 END) AS Negative_Salaries,
-    SUM(CASE WHEN [SALARY] IS NULL THEN 1 ELSE 0 END) AS NULL_Salaries,
-    SUM(CASE WHEN [SALARY] = 0 THEN 1 ELSE 0 END) AS Zero_Salaries,
-    SUM(CASE WHEN [SALARY] > 0 THEN 1 ELSE 0 END) AS Positive_Salaries
-FROM [CUSTOMER_LOYALTY_CLEANED];
+    COUNT(*) AS TOTAL_ROWS,
+    SUM(CASE WHEN [SALARY] < 0 THEN 1 ELSE 0 END) AS NEGATIVE_SALARIES,
+    SUM(CASE WHEN [SALARY] IS NULL THEN 1 ELSE 0 END) AS NULL_SALARIES,
+    SUM(CASE WHEN [SALARY] = 0 THEN 1 ELSE 0 END) AS ZERO_SALARIES,
+    SUM(CASE WHEN [SALARY] > 0 THEN 1 ELSE 0 END) AS POSITIVE_SALARIES
+FROM [CUSTOMER_LOYALTY_CLEANED]
 ```
+
+| TOTAL_ROWS | NEGATIVE_SALARIES | NULL_SALARIES | ZERO_SALARIES | POSITIVE_SALARIES |
+|-----------:|------------:|-------------:|-------------:|-----------------:|
+| 16,737     | 0           | 4,258        | 0            | 12,479           |
 
 This ensured that negative salary values were no longer treated as valid financial information.
 
