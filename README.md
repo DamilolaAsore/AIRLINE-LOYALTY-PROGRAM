@@ -1077,6 +1077,7 @@ SET [Start_of_Quarter] = DATEADD(
 );
 ```
 
+
 The correction was then validated:
 
 ```SQL
