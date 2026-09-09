@@ -452,13 +452,13 @@ SELECT
     AVG(CAST([TOTAL_FLIGHTS] AS DECIMAL(18,2))) AS AVERAGE_FLIGHTS,
     SUM(CASE WHEN [TOTAL_FLIGHTS] < 0 THEN 1 ELSE 0 END) AS NEGATIVE_FLIGHTS,
     SUM(CASE WHEN [TOTAL_FLIGHTS] = 0 THEN 1 ELSE 0 END) AS ZERO_FLIGHTS
-FROM [CUSTOMER_FLIGHT]
+FROM [CUSTOMER_FLIGHT_CLEANED]
 ```
 
 
-| MINIMUM_FLIGHTS | MAXIMUM_FLIGHTS | AVERAGE_FLIGHTS | NEGATIVE_FLIGHTS  | ZERO_FLIGHTS |
+| MINIMUM_FLIGHTS | MAXIMUM_FLIGHTS | AVERAGE_FLIGHTS | NEGATIVE_FLIGHTS | ZERO_FLIGHTS |
 |--------:|--------:|--------:|-------------------:|-------------------:|
-| 0       | 28      | 1.294887 | 0                  | 214,122            |
+| 0       | 28      | 1.301252 | 0                  | 212,200            |
 
 
 
@@ -474,14 +474,14 @@ SELECT
     AVG(CAST([DISTANCE] AS DECIMAL(18,2))) AS AVERAGE_DISTANCE,
     SUM(CASE WHEN [DISTANCE] < 0 THEN 1 ELSE 0 END) AS NEGATIVE_DISTANCE,
     SUM(CASE WHEN [DISTANCE] = 0 THEN 1 ELSE 0 END) AS ZERO_DISTANCE
-FROM [CUSTOMER_FLIGHT]
+FROM [CUSTOMER_FLIGHT_CLEANED]
 ```
 
 
 
-| MINIMUM_DISTANCE | MAXIMUM_DISTANCE | AVERAGE_DISTANCE | NEGATIVE_DISTANCE |  ZERO_DISTANCE |
+| MINIMUM_DISTANCE | MAXIMUM_DISTANCE | AVERAGE_DISTANCE | NEGATIVE_DISTANCE | ZERO_DISTANCE |
 |--------:|--------:|--------:|-------------------:|-------------------:|
-| 0       | 67,284  | 1,941.440201 | 0                  | 214,122            |
+| 0       | 67,284  | 1,950.983205 | 0                | 212,200            |
 
 
 
@@ -498,14 +498,10 @@ SELECT
     AVG([POINTS_ACCUMULATED]) AS AVERAGE_POINTS_ACCUMULATED,
     SUM(CASE WHEN [POINTS_ACCUMULATED] < 0 THEN 1 ELSE 0 END) AS NEGATIVE_POINTS,
     SUM(CASE WHEN [POINTS_ACCUMULATED] = 0 THEN 1 ELSE 0 END) AS ZERO_POINTS
-FROM [CUSTOMER_FLIGHT]
+FROM [CUSTOMER_FLIGHT_CLEANED]
 ```
 
 
-
-| MINIMUM_POINTS_ACCUMULATED | MAXIMUM_POINTS_ACCUMULATED | AVERAGE_POINTS_ACCUMULATED | NEGATIVE_POINTS | ZERO_POINTS |
-|--------:|--------:|--------:|-------------------:|-------------------:|
-| 0       | 100,926 | 2,027.17234486023 | 0 | 214,122 |
 
 
 
@@ -567,47 +563,82 @@ Relationships between flight activity and other measures were also investigated.
 
 ```SQL
 SELECT
-    COUNT(*) AS Inconsistent_Records
+    COUNT(*) AS INCONSISTENT_RECORDS,
 FROM [CUSTOMER_FLIGHT]
 WHERE [TOTAL_FLIGHTS] = 0
-  AND [DISTANCE] > 0;
+  AND [DISTANCE] > 0
 ```
+
+| INCONSISTENT_RECORDS |
+|----------:|
+| 0         |
+
+
 
 ```SQL
 SELECT
-    COUNT(*) AS Inconsistent_Records
+    COUNT(*) AS INCONSISTENT_RECORDS
 FROM [CUSTOMER_FLIGHT]
 WHERE [POINTS_REDEEMED] = 0
-  AND [DOLLAR_COST_POINTS_REDEEMED] > 0;
+  AND [DOLLAR_COST_POINTS_REDEEMED] > 0
 ```
+
+| INCONSISTENT_RECORDS |
+|----------:|
+| 0         |
+
+
 
 ```SQL
 SELECT
-    COUNT(*) AS Inconsistent_Records
+    COUNT(*) AS INCONSISTENT_RECORDS
 FROM [CUSTOMER_FLIGHT]
 WHERE [POINTS_REDEEMED] > 0
   AND [DOLLAR_COST_POINTS_REDEEMED] = 0;
 ```
+| INCONSISTENT_RECORDS |
+|----------:|
+| 0         |
+
+
+
+
+
 
 Additional checks were performed to identify records requiring investigation:
 
 ```SQL
 SELECT
-    COUNT(*) AS Records_To_Investigate
+    COUNT(*) AS RECORDS_TO_INVESTIGATE
 FROM [CUSTOMER_FLIGHT]
 WHERE [TOTAL_FLIGHTS] = 0
   AND [POINTS_ACCUMULATED] > 0;
 ```
 
+| RECORDS_TO_INVESTIGATE |
+|----------:|
+| 0         |
+
+
+
+
 ```SQL
 SELECT
-    COUNT(*) AS Records_To_Investigate
+    COUNT(*) AS RECORDS_TO_INVESTIGATE
 FROM [CUSTOMER_FLIGHT]
 WHERE [TOTAL_FLIGHTS] > 0
   AND [POINTS_ACCUMULATED] = 0;
 ```
 
+| RECORDS_TO_INVESTIGATE |
+|----------:|
+| 0         |
+
+
 These checks helped determine whether unusual combinations of values represented potential data-quality issues.
+
+
+
 
 
 
