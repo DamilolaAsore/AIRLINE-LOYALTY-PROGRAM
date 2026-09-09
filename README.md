@@ -501,8 +501,9 @@ SELECT
 FROM [CUSTOMER_FLIGHT_CLEANED]
 ```
 
-
-
+| MINIMUM_POINTS_ACCUMULATED | MAXIMUM_POINTS_ACCUMULATED | AVERAGE_POINTS_ACCUMULATED | NEGATIVE_POINTS, | ZERO_POINTS |
+|--------:|--------:|--------:|-------------------:|-------------------:|
+| 0       | 100,926 | 2,037.13675853039 | 0 | 212,200 |
 
 
 
@@ -517,14 +518,13 @@ SELECT
     AVG(CAST([POINTS_REDEEMED] AS DECIMAL(18,2))) AS AVERAGE_POINTS_REDEEMED,
     SUM(CASE WHEN [POINTS_REDEEMED] < 0 THEN 1 ELSE 0 END) AS NEGATIVE_POINTS_REDEEMED,
     SUM(CASE WHEN [POINTS_REDEEMED] = 0 THEN 1 ELSE 0 END) AS ZERO_POINTS_REDEEEMED
-FROM [CUSTOMER_FLIGHT]
+FROM [CUSTOMER_FLIGHT_CLEANED]
 ```
 
 
 | MINIMUM_POINTS_REDEEMED | MAXIMUM_POINTS_REDEEMED | AVERAGE_POINTS_REDEEMED | NEGATIVE_POINTS_REDEEMED | ZERO_POINTS_REDEEEMED |
 |--------:|--------:|--------:|-------------------:|-------------------:|
-| 0       | 876     | 31.304263 | 0                | 369,051            |
-
+| 0       | 876     | 31.458137 | 0                | 367,129            |
 
 
 
@@ -539,13 +539,12 @@ SELECT
     AVG(CAST([DOLLAR_COST_POINTS_REDEEMED] AS DECIMAL(18,2))) AS AVERAGE_DOLLAR_COST,
     SUM(CASE WHEN [DOLLAR_COST_POINTS_REDEEMED] < 0 THEN 1 ELSE 0 END) AS NEGATIVE_DOLLAR_COST,
     SUM(CASE WHEN [DOLLAR_COST_POINTS_REDEEMED] = 0 THEN 1 ELSE 0 END) AS ZERO_DOLLAR_COST
-FROM [CUSTOMER_FLIGHT]
+FROM [CUSTOMER_FLIGHT_CLEANED]
 ```
-
 
 |  MINIMUM_DOLLAR_COST | MAXIMUM_DOLLLAR_COST | AVERAGE_DOLLAR_COST | NEGATIVE_DOLLAR_COST | ZERO_DOLLAR_COST |
 |--------:|--------:|--------:|-------------------:|-------------------:|
-| 0       | 158     | 5.635660 | 0                | 369,051            |
+| 0       | 158     | 5.663362 | 0                | 367,129            |
 
 
 
@@ -564,7 +563,7 @@ Relationships between flight activity and other measures were also investigated.
 ```SQL
 SELECT
     COUNT(*) AS INCONSISTENT_RECORDS,
-FROM [CUSTOMER_FLIGHT]
+FROM [CUSTOMER_FLIGHT_CLEANED]
 WHERE [TOTAL_FLIGHTS] = 0
   AND [DISTANCE] > 0
 ```
@@ -578,7 +577,7 @@ WHERE [TOTAL_FLIGHTS] = 0
 ```SQL
 SELECT
     COUNT(*) AS INCONSISTENT_RECORDS
-FROM [CUSTOMER_FLIGHT]
+FROM [CUSTOMER_FLIGHT_CLEANED]
 WHERE [POINTS_REDEEMED] = 0
   AND [DOLLAR_COST_POINTS_REDEEMED] > 0
 ```
@@ -592,7 +591,7 @@ WHERE [POINTS_REDEEMED] = 0
 ```SQL
 SELECT
     COUNT(*) AS INCONSISTENT_RECORDS
-FROM [CUSTOMER_FLIGHT]
+FROM [CUSTOMER_FLIGHT_CLEANED]
 WHERE [POINTS_REDEEMED] > 0
   AND [DOLLAR_COST_POINTS_REDEEMED] = 0;
 ```
@@ -610,7 +609,7 @@ Additional checks were performed to identify records requiring investigation:
 ```SQL
 SELECT
     COUNT(*) AS RECORDS_TO_INVESTIGATE
-FROM [CUSTOMER_FLIGHT]
+FROM [CUSTOMER_FLIGHT_CLEANED]
 WHERE [TOTAL_FLIGHTS] = 0
   AND [POINTS_ACCUMULATED] > 0;
 ```
@@ -625,7 +624,7 @@ WHERE [TOTAL_FLIGHTS] = 0
 ```SQL
 SELECT
     COUNT(*) AS RECORDS_TO_INVESTIGATE
-FROM [CUSTOMER_FLIGHT]
+FROM [CUSTOMER_FLIGHT_CLEANED]
 WHERE [TOTAL_FLIGHTS] > 0
   AND [POINTS_ACCUMULATED] = 0;
 ```
@@ -657,6 +656,26 @@ FROM INFORMATION_SCHEMA.COLUMNS
 WHERE TABLE_NAME = 'CUSTOMER_LOYALTY'
 ORDER BY ORDINAL_POSITION;
 ```
+
+| COLUMN_NAME        | DATA_TYPE | IS_NULLABLE |
+|--------------------|-----------|-------------|
+| Loyalty_Number     | bigint    | YES         |
+| Country            | nvarchar  | YES         |
+| Province           | nvarchar  | YES         |
+| City               | nvarchar  | YES         |
+| Postal_Code        | nvarchar  | YES         |
+| Gender             | nvarchar  | YES         |
+| Education          | nvarchar  | YES         |
+| Salary             | float     | YES         |
+| Marital_Status     | nvarchar  | YES         |
+| Loyalty_Card       | nvarchar  | YES         |
+| CLV                | float     | YES         |
+| Enrollment_Type    | nvarchar  | YES         |
+| Enrollment_Year    | bigint    | YES         |
+| Enrollment_Month   | bigint    | YES         |
+| Cancellation_Year  | bigint    | YES         |
+| Cancellation_Month | bigint    | YES         |
+
 
 
 -	NULL Value Assessment
