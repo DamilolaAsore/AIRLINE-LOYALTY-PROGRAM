@@ -684,25 +684,32 @@ NULL values were assessed across the customer loyalty fields:
 
 ```SQL
 SELECT
-    COUNT(*) AS Total_Rows,
-    SUM(CASE WHEN [LOYALTY_NUMBER] IS NULL THEN 1 ELSE 0 END) AS Loyalty_Number_NULL,
-    SUM(CASE WHEN [COUNTRY] IS NULL THEN 1 ELSE 0 END) AS Country_NULL,
-    SUM(CASE WHEN [PROVINCE] IS NULL THEN 1 ELSE 0 END) AS Province_NULL,
-    SUM(CASE WHEN [CITY] IS NULL THEN 1 ELSE 0 END) AS City_NULL,
-    SUM(CASE WHEN [POSTAL_CODE] IS NULL THEN 1 ELSE 0 END) AS Postal_Code_NULL,
-    SUM(CASE WHEN [GENDER] IS NULL THEN 1 ELSE 0 END) AS Gender_NULL,
-    SUM(CASE WHEN [EDUCATION] IS NULL THEN 1 ELSE 0 END) AS Education_NULL,
-    SUM(CASE WHEN [SALARY] IS NULL THEN 1 ELSE 0 END) AS Salary_NULL,
-    SUM(CASE WHEN [MARITAL_STATUS] IS NULL THEN 1 ELSE 0 END) AS Marital_Status_NULL,
-    SUM(CASE WHEN [LOYALTY_CARD] IS NULL THEN 1 ELSE 0 END) AS Loyalty_Card_NULL,
-    SUM(CASE WHEN [CLV] IS NULL THEN 1 ELSE 0 END) AS CLV_NULL,
-    SUM(CASE WHEN [ENROLLMENT_TYPE] IS NULL THEN 1 ELSE 0 END) AS Enrollment_Type_NULL,
-    SUM(CASE WHEN [ENROLLMENT_YEAR] IS NULL THEN 1 ELSE 0 END) AS Enrollment_Year_NULL,
-    SUM(CASE WHEN [ENROLLMENT_MONTH] IS NULL THEN 1 ELSE 0 END) AS Enrollment_Month_NULL,
-    SUM(CASE WHEN [CANCELLATION_YEAR] IS NULL THEN 1 ELSE 0 END) AS Cancellation_Year_NULL,
-    SUM(CASE WHEN [CANCELLATION_MONTH] IS NULL THEN 1 ELSE 0 END) AS Cancellation_Month_NULL
+    COUNT(*) AS TOTAL_ROWS,
+    SUM(CASE WHEN [LOYALTY_NUMBER] IS NULL THEN 1 ELSE 0 END) AS NULL_LOYALTY_NUMBER,
+    SUM(CASE WHEN [COUNTRY] IS NULL THEN 1 ELSE 0 END) AS NULL_COUNTRY,
+    SUM(CASE WHEN [PROVINCE] IS NULL THEN 1 ELSE 0 END) AS NULL_PROVINCE,
+    SUM(CASE WHEN [CITY] IS NULL THEN 1 ELSE 0 END) AS NULL_CITY,
+    SUM(CASE WHEN [POSTAL_CODE] IS NULL THEN 1 ELSE 0 END) AS NULL_POSTAL_CODE,
+    SUM(CASE WHEN [GENDER] IS NULL THEN 1 ELSE 0 END) AS NULL_GENDER,
+    SUM(CASE WHEN [EDUCATION] IS NULL THEN 1 ELSE 0 END) AS NULL_EDUCATION,
+    SUM(CASE WHEN [SALARY] IS NULL THEN 1 ELSE 0 END) AS NULL_SALARY,
+    SUM(CASE WHEN [MARITAL_STATUS] IS NULL THEN 1 ELSE 0 END) AS NULL_MARITAL_STATUS,
+    SUM(CASE WHEN [LOYALTY_CARD] IS NULL THEN 1 ELSE 0 END) AS NULL_LOYALTY_CARD,
+    SUM(CASE WHEN [CLV] IS NULL THEN 1 ELSE 0 END) AS NULL_CLV,
+    SUM(CASE WHEN [ENROLLMENT_TYPE] IS NULL THEN 1 ELSE 0 END) AS NULL_ENROLLMENT_TYPE,
+    SUM(CASE WHEN [ENROLLMENT_YEAR] IS NULL THEN 1 ELSE 0 END) AS NULL_ENROLLMENT_YEAR,
+    SUM(CASE WHEN [ENROLLMENT_MONTH] IS NULL THEN 1 ELSE 0 END) AS NULL_ENROLLMENT_MONTH,
+    SUM(CASE WHEN [CANCELLATION_YEAR] IS NULL THEN 1 ELSE 0 END) AS NULL_CANCELLATION_YEAR,
+    SUM(CASE WHEN [CANCELLATION_MONTH] IS NULL THEN 1 ELSE 0 END) AS NULL_CANCELLATION_MONTH
 FROM [CUSTOMER_LOYALTY];
 ```
+
+
+| TOTAL_ROWS |  NULL_LOYALTY_NUMBER | NULL_COUNTRY | NULL_PROVINCE | NULL_CITY | NULL_POSTAL_CODE | NULL_GENDER | NULL_EDUCATION | NULL_SALARY | NULL_MARITAL_STATUS | NULL_LOYALTY_CARD | NULL_CLV | NULL_ENROLLMENT_TYPE |  NULL_ENROLLMENT_YEAR | NULL_ENROLLMENT_MONTH | NULL_CANCELLATION_YEAR | NULL_CANCELLATION_MONTH |
+|-----------:|--------------------:|-------------:|--------------:|-----------:|------------------:|-------------:|---------------:|------------:|--------------------:|-------------------:|----------:|---------------------:|---------------------:|----------------------:|----------------------:|-----------------------:|
+| 16,737     | 0                   | 0            | 0             | 0          | 0                | 0            | 0              | 4,238       | 0                   | 0                  | 0         | 0                    | 0                    | 0                     | 14,670                | 14,670                 |
+
+
 
 NULL values were reviewed according to the role of each field. In particular, cancellation-year and cancellation-month NULLs were retained because they represent members who had not cancelled.
 
@@ -713,25 +720,42 @@ Salary values were specifically investigated for NULL, negative, zero, and posit
 
 ```SQL
 SELECT
-    COUNT(*) AS Negative_Salary_Records,
-    MIN([SALARY]) AS Lowest_Salary
+    COUNT(*) AS NEGATIVE_SALARY_RECORDS,
+    MIN([SALARY]) AS MINIMUM_SALARY
 FROM [CUSTOMER_LOYALTY]
-WHERE [SALARY] < 0;
+WHERE [SALARY] < 0
 ```
+
+
+| NEGATIVE_SALARY_RECORDS |  MINIMUM_SALARY |
+|--------:|--------:|
+| 20      | -58,486 |
+
+
+
+
 
 Negative salary records were further examined by education:
 
 ```SQL
 SELECT
     [EDUCATION],
-    COUNT(*) AS Negative_Salary_Records,
-    MIN([SALARY]) AS Lowest_Salary,
-    MAX([SALARY]) AS Highest_Salary
+    COUNT(*) AS NEGATIVE_SALARY_RECORDS,
+    MIN([SALARY]) AS MINIMUM_SALARY,
+    MAX([SALARY]) AS MAXIMUM_SALARY
 FROM [CUSTOMER_LOYALTY]
 WHERE [SALARY] < 0
 GROUP BY [EDUCATION]
-ORDER BY Negative_Salary_Records DESC;
+ORDER BY NEGATIVE_SALARY_RECORDS DESC
 ```
+
+| EDUCATION            | NEGATIVE_SALARY_RECORDS | MINIMUM_SALARY | MAXIMUM_SALARY |
+|----------------------|-----------------:|--------:|--------:|
+| Bachelor             | 19               | -58,486 | -9,081  |
+| High School or Below | 1                | -49,830 | -49,830 |
+
+
+
 
 The individual records were also reviewed:
 
