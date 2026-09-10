@@ -873,59 +873,45 @@ This ensured that negative salary values were no longer treated as valid financi
 **5. CUSTOMER_LOYALTY Postal Code Cleaning**
 
 Postal codes were investigated because geographical analysis required valid Canadian postal-code formats.
+
 The following query was used to identify records that did not follow the expected Canadian postal-code pattern:
 
 ```SQL
 SELECT
     [POSTAL_CODE],
-    COUNT(*) AS CUSTOMER_COUNT
-FROM [CUSTOMER_LOYALTY_CLEANED]
-WHERE [POSTAL_CODE] NOT LIKE '[A-Z][0-9][A-Z] [0-9][A-Z][0-9]'
-   OR LEFT([POSTAL_CODE], 1) IN ('D','F','I','O','Q','U')
-   OR SUBSTRING([POSTAL_CODE], 3, 1) IN ('D','F','I','O','Q','U')
-   OR SUBSTRING([POSTAL_CODE], 5, 1) IN ('D','F','I','O','Q','U')
-GROUP BY [POSTAL_CODE]
-ORDER BY CUSTOMER_COUNT DESC
-```
-
-|POSTAL_CODE | CUSTOMER_COUNT |
-|-------------|------:|
-| K1F 2R2     | 389   |
-| T9O 2W2     | 113   |
-
-
-Further validation was performed to identify invalid leading characters:
-
-```SQL
-SELECT
-    [POSTAL_CODE],
-    COUNT(*) AS Customer_Count
+    COUNT(*) AS INVALID_POSTAL_CODE
 FROM [CUSTOMER_LOYALTY_CLEANED]
 WHERE [POSTAL_CODE] NOT LIKE '[A-Z][0-9][A-Z] [0-9][A-Z][0-9]'
    OR LEFT([POSTAL_CODE], 1) IN ('D','F','I','O','Q','U','W','Z')
 GROUP BY [POSTAL_CODE]
-ORDER BY Customer_Count DESC
+ORDER BY INVALID_POSTAL_CODE DESC
 ```
 
-Three specific invalid postal codes were identified and investigated:
+| INVALID_POSTAL_CODE | CUSTOMER_COUNT |
+|-------------|---------------:|
+| U5I 4F1     | 444            |
+| V10 6T5     | 389            |
+| V09 2E9     | 88             |
+
+
+These invalid values were converted to NULL:
 
 ```SQL
-SELECT
-    [POSTAL_CODE],
-    COUNT(*) AS Customer_Count
-FROM [CUSTOMER_LOYALTY_CLEANED]
-WHERE [POSTAL_CODE] IN ('U5I 4F1', 'V10 6T5', 'V09 2E9')
-GROUP BY [POSTAL_CODE]
-ORDER BY Customer_Count DESC;
-These invalid values were converted to NULL:
 UPDATE [CUSTOMER_LOYALTY_CLEANED]
 SET [POSTAL_CODE] = NULL
-WHERE [POSTAL_CODE] IN ('U5I 4F1', 'V10 6T5', 'V09 2E9');
+WHERE [POSTAL_CODE] IN ('U5I 4F1', 'V10 6T5', 'V09 2E9')
+```
+
 The cleaned postal-code field was then checked:
+
+
 SELECT
     COUNT(*) AS Total_Rows,
     COUNT([POSTAL_CODE]) AS Non_NULL_Postal_Codes,
-    SUM(CASE WHEN [POSTAL_CODE] IS NULL THEN 1 ELSE 0 END) AS NULL_Postal_Codes
+    SUM(CASE
+        WHEN [POSTAL_CODE] IS NULL THEN 1
+        ELSE 0
+    END) AS NULL_Postal_Codes
 FROM [CUSTOMER_LOYALTY_CLEANED];
 ```
 
