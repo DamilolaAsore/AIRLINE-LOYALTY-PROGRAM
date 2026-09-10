@@ -1034,7 +1034,7 @@ AND CalendarTable.[Date] <
 ```SQL
 SELECT COUNT(*) AS INCORRECT_START_OF_YEAR
 FROM [CALENDAR]
-WHERE [Start_of_Year] <> DATEFROMPARTS(YEAR([Date]), 1, 1);
+WHERE [Start_of_Year] <> DATEFROMPARTS(YEAR([Date]), 1, 1)
 ```
 
 -	Start-of-Month Validation and Correction
@@ -1044,22 +1044,22 @@ The start-of-month field was checked against the actual first day of each month:
 ```SQL
 SELECT COUNT(*) AS INCORRECT_START_OF_MONTH
 FROM [CALENDAR]
-WHERE [Start_of_Month] <> DATEFROMPARTS(YEAR([Date]), MONTH([Date]), 1);
+WHERE [Start_of_Month] <> DATEFROMPARTS(YEAR([Date]), MONTH([Date]), 1)
 ```
 
 The field was then corrected using the appropriate date calculation:
 
 ```SQL
 UPDATE [CALENDAR]
-SET [Start_of_Month] = DATEFROMPARTS(YEAR([Date]), MONTH([Date]), 1);
+SET [Start_of_Month] = DATEFROMPARTS(YEAR([Date]), MONTH([Date]), 1)
 ```
 
 The correction was subsequently validated:
 
 ```SQL
-SELECT COUNT(*) AS Incorrect_Start_of_Month
+SELECT COUNT(*) AS INCORRECT_START_OF_MONTH
 FROM [Calendar]
-WHERE [Start_of_Month] <> DATEFROMPARTS(YEAR([Date]), MONTH([Date]), 1);
+WHERE [Start_of_Month] <> DATEFROMPARTS(YEAR([Date]), MONTH([Date]), 1)
 ```
 
 - Start-of-Quarter Validation and Correction
@@ -1067,37 +1067,38 @@ WHERE [Start_of_Month] <> DATEFROMPARTS(YEAR([Date]), MONTH([Date]), 1);
 The start-of-quarter field was also checked:
 
 ```SQL
-SELECT COUNT(*) AS Incorrect_Start_of_Quarter
+SELECT COUNT(*) AS INCORRECT_START_OF_QUARTER
 FROM [Calendar]
 WHERE [Start_of_Quarter] <> DATEADD(
     QUARTER,
     DATEDIFF(QUARTER, 0, [Date]),
     0
-);
+)
 ```
 
 The field was corrected using:
 
 ```SQL
-UPDATE [Calendar]
+UPDATE [CALENDAR]
 SET [Start_of_Quarter] = DATEADD(
     QUARTER,
     DATEDIFF(QUARTER, 0, [Date]),
     0
-);
+)
 ```
 
 
 The correction was then validated:
 
 ```SQL
-SELECT COUNT(*) AS Incorrect_Start_of_Quarter
-FROM [dbo].[Calendar]
+SELECT COUNT(*) AS 
+INCORRECT_START_OF_QUARTER
+FROM [dbo].[CALENDAR]
 WHERE [Start_of_Quarter] <> DATEADD(
     QUARTER,
     DATEDIFF(QUARTER, 0, [Date]),
     0
-);
+)
 ```
 
 Finally, the completeness of the key calendar fields was checked:
@@ -1105,13 +1106,18 @@ Finally, the completeness of the key calendar fields was checked:
 
 ```SQL
 SELECT
-    COUNT(*) AS Total_Rows,
-    COUNT([Date]) AS Date_Count,
-    COUNT([Start_of_Year]) AS Start_of_Year_Count,
-    COUNT([Start_of_Quarter]) AS Start_of_Quarter_Count,
-    COUNT([Start_of_Month]) AS Start_of_Month_Count
-FROM [Calendar];
+    COUNT(*) AS TOTAL_ROWS,
+    COUNT([Date]) AS DATE_COUNT,
+    COUNT([Start_of_Year]) AS START_OF_YEAR_COUNT,
+    COUNT([Start_of_Quarter]) AS START_OF_QUARTER_COUNT,
+    COUNT([Start_of_Month]) AS START_OF_MONTH_COUNT
+FROM [CALENDAR]
 ```
+
+
+|TOTAL_ROWS| DATE_COUNT| START_OF_YEAR_COUNT | START_OF_QUARTER_COUNT | START_OF_MONTH_COUNT |
+|-----------:|----------:|-------------------:|-----------------------:|--------------------:|
+| 2,557      | 2,557     | 2,557              | 2,557                  | 2,557               |
 
 
 **8. Final Customer Flight Integrity Check**
@@ -1120,23 +1126,23 @@ After cleaning, the flight table was checked again for loyalty-number completene
 
 ```SQL
 SELECT
-    COUNT(*) AS Total_Rows,
-    COUNT([LOYALTY_NUMBER]) AS Non_NULL_Loyalty_Numbers,
-    SUM(CASE WHEN [LOYALTY_NUMBER] IS NULL THEN 1 ELSE 0 END) AS NULL_Loyalty_Numbers,
-    COUNT(DISTINCT [LOYALTY_NUMBER]) AS Unique_Loyalty_Numbers
-FROM [CUSTOMER_FLIGHT_CLEANED];
+    COUNT(*) AS TOTAL_ROWS,
+    COUNT([LOYALTY_NUMBER]) AS NON_NULL_LOYALTY_NUMBERS,
+    SUM(CASE WHEN [LOYALTY_NUMBER] IS NULL THEN 1 ELSE 0 END) AS NULL_LOYALTY_NUMBERS,
+    COUNT(DISTINCT [LOYALTY_NUMBER]) AS UNIQUE_LOYALTY_NUMBERS
+FROM [CUSTOMER_FLIGHT_CLEANED]
 ```
 
 The relationship between the cleaned flight and customer loyalty tables was also checked to identify flight records whose loyalty numbers did not exist in the customer table:
 
 ```SQL
 SELECT
-    COUNT(DISTINCT Customer_Flight_Cleaned.[LOYALTY_NUMBER]) AS Unmatched_Loyalty_Numbers
-FROM [CUSTOMER_FLIGHT_CLEANED] AS Customer_Flight_Cleaned
-LEFT JOIN [CUSTOMER_LOYALTY_CLEANED] AS Customer_Loyalty_Cleaned
-    ON CustomerFlightCleaned.[LOYALTY_NUMBER] =
-       CustomerLoyaltyCleaned.[LOYALTY_NUMBER]
-WHERE CustomerLoyaltyCleaned.[LOYALTY_NUMBER] IS NULL;
+    COUNT(DISTINCT CUSTOMER_FLIGHT_CLEANED.[LOYALTY_NUMBER]) AS UNMATCHED_LOYALTY_NUMBERS
+FROM [CUSTOMER_FLIGHT_CLEANED] AS CUSTOMER_FLIGHT_CLEANED
+LEFT JOIN [CUSTOMER_LOYALTY_CLEANED] AS [CUSTOMER_LOYALTY_CLEANED
+    ON CUSTOMER_FLIGHT_CLEANED.[LOYALTY_NUMBER] =
+       CUSTOMER_LOYALTY_CLEANED.[LOYALTY_NUMBER]
+WHERE [CUSTOMER_LOYALTY_CLEANED.[LOYALTY_NUMBER] IS NULL
 ```
 
 
@@ -1147,9 +1153,9 @@ The cleaning process produced the following analytical dataset:
 
 -	CUSTOMER_FLIGHT: 392,936 original records reduced to 391,014 unique records after removing exact duplicate records.
 -	CUSTOMER_LOYALTY: 16,737 unique loyalty members.
--	Postal Codes: 921 invalid postal-code records identified, with 15,816 valid postal-code records remaining.
+-	POSTAL CODES: 921 invalid postal-code records identified, with 15,816 valid postal-code records remaining.
 -	CALENDAR: 2,557 records, with date fields reviewed and incorrect start-of-month and start-of-quarter values corrected.
--	Salary: Negative salary values were converted to NULL so that they would not be treated as valid salary values.
+-	SALARIES: Negative salaries values were converted to NULL so that they would not be treated as valid salary values.
   
 The cleaned tables were subsequently used for the business analysis of the 2018 promotional campaign, customer demographic adoption, loyalty membership, and summer 2018 flight activity.
 
@@ -1161,6 +1167,7 @@ The objectives of this analysis is to the provide answers to the following quest
 1.	What impact did the campaign have on loyalty program memberships (gross / net)?
 2.	Was the campaign adoption more successful for certain demographics of loyalty members?
 3.	What impact did the campaign have on booked flights during summer?
+
 
 **1.	What impact did the campaign have on loyalty program memberships (gross / net)?**
 
@@ -1179,31 +1186,38 @@ The campaign membership was analyzed by identifying customers enrolled through t
 ```SQL
 SELECT
     [ENROLLMENT_TYPE],
-    COUNT(*) AS Total_Members,
+    COUNT(*) AS TOTAL_MEMBERS,
     SUM(
         CASE
             WHEN [CANCELLATION_YEAR] IS NOT NULL
             THEN 1
             ELSE 0
         END
-    ) AS Cancelled_Members,
+    ) AS CANCELLED_MEMBERS,
     SUM(
         CASE
             WHEN [CANCELLATION_YEAR] IS NULL
             THEN 1
             ELSE 0
         END
-    ) AS Active_Members
+    ) AS ACTIVE_MEMBERS
 FROM [CUSTOMER_LOYALTY_CLEANED]
 GROUP BY [ENROLLMENT_TYPE]
-ORDER BY Total_Members DESC;
+ORDER BY TOTAL_MEMBERS DESC;
 ```
+
+| ENROLLMENT_TYPE   | GROSS_MEMBERS | CANCELLED_MEMBERS | NET_MEMBERS |
+|------------------|--------------:|--------------:|------------:|
+| Standard         | 15,766        | 1,952         | 13,814      |
+| 2018 Promotion   | 971           | 115           | 856         |
+
+
 
 The results were used to isolate the campaign members and determine their gross membership, cancellations, and remaining active members.
 
 ##### Results
 
-| Membership Measure      | Campaign |
+| MEMBERSHIP_MEASURE      | CAMPAIGN|
 |-------------------------|----------|
 | Gross Campaign Members  | 971      |
 | Cancelled Members       | 115      |
@@ -1218,7 +1232,7 @@ The campaign attracted 971 loyalty program members. Of these, 115 members cancel
   
 The campaign enrolment period covered February, March, and April 2018.
 
-| Month    | Campaign Enrolments |
+| MONTH    |CAMPAIGN_ENROLLMENTS |
 |----------|--------------------:|
 | February | 295                 |
 | March   | 330                 |
@@ -1231,12 +1245,12 @@ April recorded the highest number of campaign enrollments with 346 members, foll
 
 ##### Key Insights
 
--	Strong membership acquisition: The campaign attracted 971 new loyalty members, demonstrating that the promotion generated meaningful membership growth.
--	High retention: 856 members remained active, resulting in an 88.16% retention rate. This indicates that most customers acquired through the campaign continued their membership after enrollment.
--	Limited cancellation: Only 115 campaign members cancelled, representing an 11.84% cancellation rate.
--	Positive net membership impact: After accounting for cancellations, the campaign contributed 856 net active members to the loyalty program.
--	Enrollment increased throughout the campaign: Campaign enrollment rose from 295 members in February to 330 in March and 346 in April, with April producing the highest enrollment.
--	Campaign cancellation was slightly better than Standard membership: Campaign members recorded an 11.84% cancellation rate, compared with 12.38% among Standard members. This represents a 0.54 percentage-point lower cancellation rate for campaign members.
+-	**Strong membership acquisition:** The campaign attracted 971 new loyalty members, demonstrating that the promotion generated meaningful membership growth.
+-	**High retention:** 856 members remained active, resulting in an 88.16% retention rate. This indicates that most customers acquired through the campaign continued their membership after enrollment.
+-	**Limited cancellation:** Only 115 campaign members cancelled, representing an 11.84% cancellation rate.
+-	**Positive net membership impact:** After accounting for cancellations, the campaign contributed 856 net active members to the loyalty program.
+-	**Enrollment increased throughout the campaign:** Campaign enrollment rose from 295 members in February to 330 in March and 346 in April, with April producing the highest enrollment.
+-	**Campaign cancellation was slightly better than Standard membership:** Campaign members recorded an 11.84% cancellation rate, compared with 12.38% among Standard members. This represents a 0.54 percentage-point lower cancellation rate for campaign members.
   
 
 ##### Conclusion
@@ -1253,36 +1267,10 @@ Overall, the campaign was effective in both attracting new loyalty members and m
 **2.	Was the campaign adoption more successful for certain demographics of loyalty members?**
 This question seeks to determine whether the 2018 promotional campaign was more successful among particular demographic groups within the loyalty program. Rather than looking only at the number of campaign members in each group, the analysis calculated campaign adoption rates by comparing campaign members with the total number of loyalty members in each demographic category. This provides a fairer comparison because demographic groups have different population sizes. The analysis considered gender, education, marital status, loyalty card type, salary, and customer lifetime value (CLV). Geographical adoption was analyzed separately using province and city.
 
-##### SQL 
+##### SQL ANALYSIS
 
 Campaign adoption was analyzed by grouping loyalty members according to each demographic characteristic and comparing campaign members with the total number of members.
 
-```SQL
-SELECT
-    [GENDER],
-    COUNT(*) AS Total_Customers,
-    SUM(
-        CASE
-            WHEN [ENROLLMENT_TYPE] = 'Promotion'
-            THEN 1
-            ELSE 0
-        END
-    ) AS Campaign_Members,
-    CAST(
-        100.0 * SUM(
-            CASE
-                WHEN [ENROLLMENT_TYPE] = 'Promotion'
-                THEN 1
-                ELSE 0
-            END
-        ) / COUNT(*) AS DECIMAL(10,2)
-    ) AS Adoption_Rate
-FROM [CUSTOMER_LOYALTY_CLEANED]
-GROUP BY [GENDER]
-ORDER BY Adoption_Rate DESC;
-```
-
-The same analytical approach was applied to the other demographic variables to identify groups with relatively higher or lower campaign adoption.
 
 #### Results
 
@@ -1292,7 +1280,7 @@ The analysis produced the following campaign adoption rates across the major dem
 - Gender
 
   
-| Gender | Campaign Members | Total Members | Adoption Rate |
+| GENDER |CAMPAIGN_MEMBERS | TOTAL_MEMBERS| ADOPTION_RATE|
 |--------|-----------------:|--------------:|--------------:|
 | Female | 494              | 8,410         | 5.87%         |
 | Male   | 477              | 8,327         | 5.73%         |
@@ -1306,7 +1294,7 @@ Female members had a slightly higher campaign adoption rate than male members.
 
 
   
-| Education            | Campaign Members | Total Members | Adoption Rate |
+| EDUCATION            | CAMPAIGN_MEMBERS | TOTAL_MEMBERS | ADOPTION_RATE |
 |----------------------|-----------------:|--------------:|--------------:|
 | High School or Below | 50               | 782           | 6.39%         |
 | Bachelor             | 632              | 10,475        | 6.03%         |
@@ -1323,7 +1311,7 @@ Education showed a clearer difference in campaign adoption than gender. Members 
 
   
 
-| Marital Status | Campaign Members | Total Members | Adoption Rate |
+| MARITAL_STATUS | CAMPAIGN_MEMBERS  | TOTAL_MEMBERS  |ADOPTION_RATE |
 |----------------|-----------------:|--------------:|--------------:|
 | Divorced       | 155              | 2,518         | 6.16%         |
 | Single         | 258              | 4,484         | 5.75%         |
@@ -1339,7 +1327,7 @@ Divorced members recorded the highest adoption rate at 6.16%, although the diffe
 
   
 
-| Loyalty Card | Campaign Members | Total Members | Adoption Rate |
+| LOYALTY_CARD | CAMPAIGN_MEMBERS| TOTAL_MEMBERS |ADOPTION_RATE |
 |-------------|-----------------:|--------------:|--------------:|
 | Aurora      | 208              | 3,429         | 6.07%         |
 | Nova        | 330              | 5,671         | 5.82%         |
@@ -1356,7 +1344,7 @@ Campaign adoption was also examined across salary bands:
 
 
 
-| Salary Band       | Total Members | Campaign Members | Adoption Rate |
+| SALARY_BAND      | TOTAL_MEMBERS | CAMPAIGN_MEMBERS | ADOPTION_RATE |
 |-------------------|--------------:|-----------------:|--------------:|
 | Low (< $40K)      | 98            | 86               | 87.76%        |
 | Lower-Middle      | 3,202         | 202              | 6.31%         |
@@ -1373,7 +1361,7 @@ The Low salary group recorded an unusually high adoption rate of 87.76%. However
 
 
 
-| CLV Band       | Total Members | Campaign Members | Adoption Rate |
+| CLV_BAND      | TOTAL_MEMBERS | CAMPAIGN_MEMBERS | ADOPTION_RATE  |
 |----------------|--------------:|-----------------:|--------------:|
 | Low            | 6,364         | 357              | 5.61%         |
 | Lower-Middle   | 4,090         | 257              | 6.28%         |
@@ -1431,13 +1419,13 @@ WHERE [CUSTOMER_FLIGHT_CLEANED].[YEAR] = 2018
 
 GROUP BY [CUSTOMER_LOYALTY_CLEANED].[ENROLLMENT_TYPE]
 
-ORDER BY Average_Flights_Per_Member DESC;
+ORDER BY AVERAGE_FLIGHTS_PER_MEMBER DESC
 ```
 
 
 ##### Results
 
-| Enrollment Type | Members | Total Flights | Average Flights per Member |
+| ENROLLMENT_TYPE | MEMBERS | TOTAL_FLIGHTS | AVERAGE_FLIGHTS_PER_MEMBER |
 |-----------------|--------:|--------------:|---------------------------:|
 | Promotion       | 971     | 24,040        | 24.76                      |
 | Standard        | 15,766  | 80,544        | 5.11                       |
@@ -1457,7 +1445,7 @@ ORDER BY Average_Flights_Per_Member DESC;
 
 ##### Monthly Flight Activity
 
-| Months      | Promotion Avg. Flights/Member | Standard Avg. Flights/Member |
+| MONTHS     | PROMOTION_AVERAGE_FLIGHTS_MEMBER | STANDARD_AVERAGE_FLIGHTS_MEMBER |
 |-------------|------------------------------:|-----------------------------:|
 | June 2018   | 8.35                          | 1.63                         |
 | July 2028   | 8.71                          | 1.87                         |
@@ -1493,43 +1481,43 @@ This suggests that the campaign was successful in engaging participating members
 
 **1. Strengthen and Expand Successful Promotional Campaigns**
 
--	Action: Continue using promotional campaigns to attract new loyalty program members, while reviewing the factors that contributed to the campaign's strong member engagement.
--	Rationale: The 2018 campaign generated 971 members, of which 856 remained active, resulting in an 88.16% retention rate. This indicates that the campaign attracted a meaningful number of members and that most campaign members remained active.
+-	**Action:** Continue using promotional campaigns to attract new loyalty program members, while reviewing the factors that contributed to the campaign's strong member engagement.
+-	**Rationale:** The 2018 campaign generated 971 members, of which 856 remained active, resulting in an 88.16% retention rate. This indicates that the campaign attracted a meaningful number of members and that most campaign members remained active.
 
 **2. Target High-Adoption Geographic Segments**
 
--	Action: Develop more targeted promotional campaigns for provinces and cities that demonstrate stronger campaign adoption, particularly areas such as Quebec and British Columbia.
--	Rationale: Campaign adoption varied across geographical locations. Quebec recorded an adoption rate of 7.06%, while British Columbia recorded 6.35%, compared with lower adoption in some other provinces. This suggests that location-specific marketing strategies could improve campaign participation.
+-	**Action:** Develop more targeted promotional campaigns for provinces and cities that demonstrate stronger campaign adoption, particularly areas such as Quebec and British Columbia.
+-	**Rationale:** Campaign adoption varied across geographical locations. Quebec recorded an adoption rate of 7.06%, while British Columbia recorded 6.35%, compared with lower adoption in some other provinces. This suggests that location-specific marketing strategies could improve campaign participation.
 
 **3. Develop Demographic-Specific Campaign Strategies**
 
--	Action: Use demographic insights to tailor campaign messaging and offers to customer groups with higher adoption rates, particularly education and marital-status segments showing stronger participation.
--	Rationale: Adoption varied across demographic groups. Customers with High School or Below education recorded 6.39% adoption, while Bachelor customers recorded 6.03%. Divorced customers also recorded a relatively higher adoption rate of 6.16%. These differences can help guide targeted marketing, while avoiding assumptions based solely on demographic characteristics.
+-	**Action:** Use demographic insights to tailor campaign messaging and offers to customer groups with higher adoption rates, particularly education and marital-status segments showing stronger participation.
+-	**Rationale:** Adoption varied across demographic groups. Customers with High School or Below education recorded 6.39% adoption, while Bachelor customers recorded 6.03%. Divorced customers also recorded a relatively higher adoption rate of 6.16%. These differences can help guide targeted marketing, while avoiding assumptions based solely on demographic characteristics.
 
 **4. Use Flight Activity to Strengthen Customer Engagement**
 
--	Action: Design promotions that encourage members to book additional flights, particularly during high-demand travel periods such as summer.
--	Rationale: Promotion members averaged 24.76 flights per member during June–August 2018, compared with 5.11 flights per Standard member. This strong difference indicates that campaign members were highly engaged with flight activity and that promotional membership can be associated with increased customer activity.
+-	**Action:** Design promotions that encourage members to book additional flights, particularly during high-demand travel periods such as summer.
+-	**Rationale:** Promotion members averaged 24.76 flights per member during June–August 2018, compared with 5.11 flights per Standard member. This strong difference indicates that campaign members were highly engaged with flight activity and that promotional membership can be associated with increased customer activity.
 
 **5. Replicate Successful Campaign Features During Peak Travel Periods**
 
--	Action: Consider introducing targeted loyalty incentives before and during peak travel periods, such as summer, to encourage members to maintain or increase their flight activity.
--	Rationale: The summer analysis showed substantially higher flight activity among Promotion members. Future campaigns could use this period to encourage additional bookings through targeted loyalty incentives and relevant travel offers.
+-	**Action:** Consider introducing targeted loyalty incentives before and during peak travel periods, such as summer, to encourage members to maintain or increase their flight activity.
+-	**Rationale:** The summer analysis showed substantially higher flight activity among Promotion members. Future campaigns could use this period to encourage additional bookings through targeted loyalty incentives and relevant travel offers.
 
 **6. Improve Campaign Targeting Using Customer Value**
 
--	Action: Combine demographic, geographical, and customer-value information when identifying customers for future campaigns rather than applying the same promotion to the entire membership base.
--	Rationale: Campaign adoption varied across CLV groups, with the Lower-Middle CLV group recording the highest adoption rate at 6.28%. This suggests that customer value can be considered alongside other characteristics when developing targeted campaigns.
+-	**Action:** Combine demographic, geographical, and customer-value information when identifying customers for future campaigns rather than applying the same promotion to the entire membership base.
+-	**Rationale:** Campaign adoption varied across CLV groups, with the Lower-Middle CLV group recording the highest adoption rate at 6.28%. This suggests that customer value can be considered alongside other characteristics when developing targeted campaigns.
 
 **7. Monitor Campaign Retention and Long-Term Customer Value**
 
--	Action: Track campaign members after enrollment using KPIs such as retention rate, flight frequency, repeat bookings, points accumulation, points redemption, and CLV.
--	Rationale: Measuring enrollment alone does not provide a complete picture of campaign success. The campaign generated 971 gross members and 856 active members, making it important to monitor whether these members remain active and continue generating value for the loyalty program.
+-	**Action:** Track campaign members after enrollment using KPIs such as retention rate, flight frequency, repeat bookings, points accumulation, points redemption, and CLV.
+-	**Rationale:** Measuring enrollment alone does not provide a complete picture of campaign success. The campaign generated 971 gross members and 856 active members, making it important to monitor whether these members remain active and continue generating value for the loyalty program.
 
 **8. Conduct Further Analysis to Measure True Campaign Impact**
 
--	Action: Introduce pre- and post-campaign tracking for future promotional campaigns and compare participating customers with an appropriate control group.
--	Rationale: The current analysis identifies a strong association between campaign membership and higher summer flight activity, but it does not establish that the campaign directly caused the increase. Future campaigns should capture customer activity before enrollment and after enrollment to enable a stronger measurement of incremental impact.
+-	**Action:** Introduce pre- and post-campaign tracking for future promotional campaigns and compare participating customers with an appropriate control group.
+-	**Rationale:** The current analysis identifies a strong association between campaign membership and higher summer flight activity, but it does not establish that the campaign directly caused the increase. Future campaigns should capture customer activity before enrollment and after enrollment to enable a stronger measurement of incremental impact.
 
 
 
