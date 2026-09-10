@@ -893,8 +893,7 @@ ORDER BY INVALID_POSTAL_CODE DESC
 | V10 6T5     | 389            |
 | V09 2E9     | 88             |
 
-
-These invalid values were converted to NULL:
+A total of 921 invalid postal-code records were identified during the cleaning process, leaving 15,816 valid postal-code records for geographical analysis. These invalid values were converted to NULL:
 
 ```SQL
 UPDATE [CUSTOMER_LOYALTY_CLEANED]
@@ -904,18 +903,24 @@ WHERE [POSTAL_CODE] IN ('U5I 4F1', 'V10 6T5', 'V09 2E9')
 
 The cleaned postal-code field was then checked:
 
-
+```SQL
 SELECT
-    COUNT(*) AS Total_Rows,
-    COUNT([POSTAL_CODE]) AS Non_NULL_Postal_Codes,
+    COUNT(*) AS TOTAL_ROWS,
+    COUNT([POSTAL_CODE]) AS NON_NULL_POSTAL_CODES,
     SUM(CASE
         WHEN [POSTAL_CODE] IS NULL THEN 1
         ELSE 0
-    END) AS NULL_Postal_Codes
-FROM [CUSTOMER_LOYALTY_CLEANED];
+    END) AS NULL_POSTAL_CODES
+FROM [CUSTOMER_LOYALTY_CLEANED]
 ```
 
-A total of 921 invalid postal-code records were identified during the cleaning process, leaving 15,816 valid postal-code records for geographical analysis.
+| TOTAL_ROWS |NON_NULL_POSTAL_CODES | NULL_POSTAL_CODES  |
+|-----------:|----------------------:|------------------:|
+| 16,737     | 15,816                | 921               |
+
+
+
+
 
 
 
@@ -925,8 +930,8 @@ After creating the cleaned customer loyalty table, the number of records and uni
 
 ```SQL
 SELECT
-    COUNT(*) AS Total_Rows,
-    COUNT(DISTINCT [LOYALTY_NUMBER]) AS Unique_Loyalty_Numbers
+    COUNT(*) AS TOTAL_ROWS,
+    COUNT(DISTINCT [LOYALTY_NUMBER]) AS UNIQUE_LOYALTY_NUMBERS
 FROM [CUSTOMER_LOYALTY_CLEANED];
 ```
 
@@ -947,15 +952,24 @@ SELECT
     CHARACTER_MAXIMUM_LENGTH
 FROM INFORMATION_SCHEMA.COLUMNS
 WHERE TABLE_SCHEMA = 'dbo'
-  AND TABLE_NAME = 'Calendar'
+  AND TABLE_NAME = 'CALENDAR'
 ORDER BY ORDINAL_POSITION;
 ```
+
+
+| COLUMN_NAME    | DATA_TYPE | IS_NULLABLE|
+|------------------|-----------|----------|
+| Date             | date      | YES      |
+| Start_of_Year    | date      | YES      |
+| Start_of_Quarter | date      | YES      |
+| Start_of_Month   | date      | YES      |
+
 
 - Date Range and NULL Assessment
 
 ```SQL
 SELECT
-    MIN([Date]) AS Minimum_Date,
+    MIN([Date]) AS MINIMUM_DATE,
     MAX([Date]) AS Maximum_Date,
     COUNT([Date]) AS Non_NULL_Dates,
     COUNT(DISTINCT [Date]) AS Unique_Dates,
