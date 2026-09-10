@@ -1169,6 +1169,10 @@ The objectives of this analysis is to the provide answers to the following quest
 3.	What impact did the campaign have on booked flights during summer?
 
 
+
+
+
+
 **1.	What impact did the campaign have on loyalty program memberships (gross / net)?**
 
 This question seeks to evaluate the impact of the 2018 promotional campaign on loyalty program membership by measuring the number of customers who enrolled during the campaign period and determining how many remained active after accounting for cancellations.
@@ -1257,6 +1261,8 @@ April recorded the highest number of campaign enrollments with 346 members, foll
 
 The 2018 promotional campaign had a positive impact on loyalty program membership. It generated 971 gross memberships and retained 856 members after cancellations, representing an 88.16% retention rate. The relatively low 11.84% campaign cancellation rate, compared with 12.38% for Standard members, suggests that campaign-acquired members were retained at a slightly better rate than Standard members. 
 Overall, the campaign was effective in both attracting new loyalty members and maintaining a high proportion of those members, resulting in a meaningful net addition of 856 active members to the loyalty program.
+
+
 
 
 
@@ -1390,6 +1396,10 @@ The Lower-Middle CLV group recorded the highest adoption rate at 6.28%, while th
 The analysis indicates that campaign adoption was more successful among certain demographic groups, but the strength of the difference varied considerably by demographic characteristic. Among the demographic variables analyzed, education showed one of the clearest differences in adoption, with rates ranging from 3.74% to 6.39%. Salary also produced a notable difference, although the exceptionally high rate for the Low salary group should be treated cautiously because of its small population. 
 In contrast, gender, marital status, loyalty card type, and CLV showed relatively narrow differences in adoption rates. This suggests that these characteristics were less effective for distinguishing customers who were more likely to adopt the campaign.
 Overall, the findings suggest that future campaign targeting could place greater emphasis on education and broader customer segmentation, while avoiding reliance on a single demographic characteristic. The results also highlight the importance of considering group size when interpreting unusually high adoption rates.
+
+
+
+
 
 
 
