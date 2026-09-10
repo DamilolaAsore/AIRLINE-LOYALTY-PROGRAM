@@ -1005,36 +1005,35 @@ FROM DateCheck
 WHERE NEXT_DATE IS NOT NULL
 AND DATEDIFF(DAY, [Date], NEXT_DATE) <> 1
 ```
-  
+
+
 A separate check was also used to identify missing date gaps:
 
 ```SQL
 SELECT
-    COUNT(*) AS MISSING_DATE_GAPSWT
-FROM [Calendar] AS CalendarTable
+    COUNT(*) AS MISSING_DATE
+FROM [CALENDAR] AS CALENDAR_TABLE
 WHERE NOT EXISTS
 (
     SELECT 1
-    FROM [Calendar] AS NextCalendarDate
-    WHERE NextCalendarDate.[Date] =
+    FROM [CALENDAR] AS NEXT-CALENDAR_DATE
+    WHERE NEXT_CALENDAR_DATE.[Date] =
           DATEADD(DAY, 1, CalendarTable.[Date])
 )
 AND CalendarTable.[Date] <
 (
     SELECT MAX([Date])
-    FROM [Calendar]
+    FROM [CALENDAR]
 )
-);
 ```
-
 
 
 
 - Start-of-Year Validation
 
 ```SQL
-SELECT COUNT(*) AS Incorrect_Start_of_Year
-FROM [Calendar]
+SELECT COUNT(*) AS INCORRECT_START_OF_YEAR
+FROM [CALENDAR]
 WHERE [Start_of_Year] <> DATEFROMPARTS(YEAR([Date]), 1, 1);
 ```
 
@@ -1043,15 +1042,15 @@ WHERE [Start_of_Year] <> DATEFROMPARTS(YEAR([Date]), 1, 1);
 The start-of-month field was checked against the actual first day of each month:
 
 ```SQL
-SELECT COUNT(*) AS Incorrect_Start_of_Month
-FROM [Calendar]
+SELECT COUNT(*) AS INCORRECT_START_OF_MONTH
+FROM [CALENDAR]
 WHERE [Start_of_Month] <> DATEFROMPARTS(YEAR([Date]), MONTH([Date]), 1);
 ```
 
 The field was then corrected using the appropriate date calculation:
 
 ```SQL
-UPDATE [Calendar]
+UPDATE [CALENDAR]
 SET [Start_of_Month] = DATEFROMPARTS(YEAR([Date]), MONTH([Date]), 1);
 ```
 
