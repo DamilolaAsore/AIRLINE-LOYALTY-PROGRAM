@@ -965,17 +965,25 @@ ORDER BY ORDINAL_POSITION;
 | Start_of_Month   | date      | YES      |
 
 
+
 - Date Range and NULL Assessment
 
 ```SQL
 SELECT
     MIN([Date]) AS MINIMUM_DATE,
-    MAX([Date]) AS Maximum_Date,
-    COUNT([Date]) AS Non_NULL_Dates,
-    COUNT(DISTINCT [Date]) AS Unique_Dates,
-    SUM(CASE WHEN [Date] IS NULL THEN 1 ELSE 0 END) AS NULL_Dates
-FROM [Calendar];
+    MAX([Date]) AS MAXIMUM_DATE,
+    COUNT([Date]) AS NON_NULL_DATES,
+    COUNT(DISTINCT [Date]) AS UNIQUE_DATES,
+    SUM(CASE WHEN [Date] IS NULL THEN 1 ELSE 0 END) AS NULL_DATES
+FROM [CALENDAR]
 ```
+
+| MINIMUM_DATE |MAXIMUM_DATE | NON_NULL_DATES |UNIQUE_DATES | NULL_DATES |
+|--------------|--------------|-----------:|---------------:|----------:|
+| 2012-01-01   | 2018-12-31   | 2,557      | 2,557          | 0         |
+
+
+
 
 -	Missing Date Sequence Check
   
@@ -986,23 +994,23 @@ WITH DateCheck AS
 (
     SELECT
         [Date],
-        LEAD([Date]) OVER (ORDER BY [Date]) AS Next_Date
-    FROM [Calendar]
+        LEAD([Date]) OVER (ORDER BY [Date]) AS NEXT_DATE
+    FROM [CALENDAR]
 )
 SELECT
-    [Date] AS Current_Date,
-    Next_Date,
-    DATEDIFF(DAY, [Date], Next_Date) AS Days_Between
+    [Date],
+    NEXT_DATE,
+    DATEDIFF(DAY, [Date], NEXT_DATE) AS DAYS_BETWEEN
 FROM DateCheck
-WHERE Next_Date IS NOT NULL
-  AND DATEDIFF(DAY, [Date], Next_Date) <> 1;
+WHERE NEXT_DATE IS NOT NULL
+AND DATEDIFF(DAY, [Date], NEXT_DATE) <> 1
 ```
   
 A separate check was also used to identify missing date gaps:
 
 ```SQL
 SELECT
-    COUNT(*) AS Missing_Date_Gaps
+    COUNT(*) AS MISSING_DATE_GAPSWT
 FROM [Calendar] AS CalendarTable
 WHERE NOT EXISTS
 (
@@ -1015,8 +1023,11 @@ AND CalendarTable.[Date] <
 (
     SELECT MAX([Date])
     FROM [Calendar]
+)
 );
 ```
+
+
 
 
 - Start-of-Year Validation
