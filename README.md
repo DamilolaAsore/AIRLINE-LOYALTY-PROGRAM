@@ -40,6 +40,7 @@ The scope of this project includes:
 -	**Customer Focus:** Loyalty program membership, promotional campaign adoption, customer demographics, customer lifetime value (CLV), and membership cancellation.
 -	**Flight Focus:** Total flights, distance travelled, points accumulated, points redeemed, and the dollar cost of redeemed points.
 -	**Key Variables:** Enrolment type, loyalty card, gender, education, marital status, salary, CLV, province, city, enrolment and cancellation details, total flights, month, year, distance, points accumulated, and points redeemed.
+
   
 ##### Analysis:
 
